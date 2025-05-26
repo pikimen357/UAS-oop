@@ -34,6 +34,13 @@
       <version>8.0.33</version>
     </dependency>
 
+<!--  Database pool hikariCP-->
+    <dependency>
+      <groupId>com.zaxxer</groupId>
+      <artifactId>HikariCP</artifactId>
+      <version>6.3.0</version>
+    </dependency>
+
     <!-- JUnit Jupiter Parameterized Tests -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>

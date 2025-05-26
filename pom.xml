@@ -27,6 +27,13 @@
       <scope>test</scope>
     </dependency>
 
+    <!-- Mysql -->
+    <dependency>
+      <groupId>mysql</groupId>
+      <artifactId>mysql-connector-java</artifactId>
+      <version>8.0.33</version>
+    </dependency>
+
     <!-- JUnit Jupiter Parameterized Tests -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>

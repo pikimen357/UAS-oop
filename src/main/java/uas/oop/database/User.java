@@ -46,7 +46,7 @@ public class User {
         String sql = """
         INSERT INTO users (username, password_hash, role, email)
         VALUES (?, ?, ?, ?)
-    """;
+                    """;
 
         var preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
@@ -73,9 +73,45 @@ public class User {
         preparedStatement.close();
         connection.close();
 
-        return idUser;
+        return this.idUser;
     }
 
+    // Method overload - untuk transaksi (gunakan koneksi yang sudah ada)
+    public int insertToUser(Connection connection) throws SQLException {
+        String sql = """
+        INSERT INTO users (username, password_hash, role, email)
+        VALUES (?, ?, ?, ?)
+        """;
 
+        var preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+
+        preparedStatement.setString(1, username);
+        preparedStatement.setString(2, passwordHash);
+        preparedStatement.setString(3, role);
+        preparedStatement.setString(4, email);
+
+        int affectedRows = preparedStatement.executeUpdate();
+        if (affectedRows == 0) {
+            throw new SQLException("Inserting user failed, no rows affected.");
+        }
+
+        try (var generatedKeys = preparedStatement.getGeneratedKeys()) {
+            if (generatedKeys.next()) {
+                int generatedId = generatedKeys.getInt(1);
+                this.idUser = generatedId;  // simpan ke objek
+                System.out.println("Insert User successful, ID = " + idUser);
+            } else {
+                throw new SQLException("Inserting user failed, no ID obtained.");
+            }
+        }
+
+        preparedStatement.close();
+        // JANGAN tutup connection - biarkan App.java yang mengelola
+
+        return this.idUser;
+    }
 }
+
+
+
 

@@ -6,7 +6,6 @@ import java.sql.SQLException;
 import java.time.LocalDateTime;
 
 public class Transaction {
-    private int id;
     private long accountNumber;
     private String type; // deposit / withdrawal
     private double amount;
@@ -19,7 +18,6 @@ public class Transaction {
         this.description = description;
     }
 
-
     public void insertToTransaction(Connection connection) throws SQLException {
         String sql = """
             INSERT INTO transactions (account_number, type, amount, description)
@@ -31,19 +29,28 @@ public class Transaction {
             preparedStatement.setString(2, type);
             preparedStatement.setDouble(3, amount);
             preparedStatement.setString(4, description);
-
-            int updateCount = preparedStatement.executeUpdate();
-            if (updateCount > 0) {
-                System.out.println("Transaction successful");
-            } else{
-                throw new SQLException("Transaction failed");
-            }
-
+            preparedStatement.executeUpdate();
         }
     }
 
     public void printDetails() {
-        System.out.printf("[%s] %s: Rp %.2f - %s\n", type.toUpperCase(), amount, description);
+        System.out.printf("[%s] Rp %.2f - %s\n", type.toUpperCase(), amount, description);
+    }
+
+    public void process(SavingsAccount account, Connection conn) throws SQLException {
+        if (type.equalsIgnoreCase("deposit")) {
+            account.deposit(amount);
+        } else if (type.equalsIgnoreCase("withdrawal")) {
+            if (amount > account.getBalance()) {
+                throw new IllegalArgumentException("Saldo tidak mencukupi.");
+            }
+            account.withdraw(amount);
+        } else {
+            throw new IllegalArgumentException("Tipe transaksi tidak valid.");
+        }
+
+        account.updateBalanceInDB(conn);
+        insertToTransaction(conn);
     }
 }
 

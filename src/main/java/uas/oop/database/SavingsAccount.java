@@ -1,5 +1,6 @@
 package uas.oop.database;
 
+import java.sql.ResultSet;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -25,6 +26,24 @@ public class SavingsAccount extends BankAccount {
         }
     }
 
+    public static SavingsAccount loadFromDB(long accountNumber, Connection conn) throws SQLException {
+        String sql = "SELECT account_number, balance, customer_id FROM accounts WHERE account_number = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setLong(1, accountNumber);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                long accNum = rs.getLong("account_number");
+                double balance = rs.getDouble("balance");
+                int customerId = rs.getInt("customer_id");
+                return new SavingsAccount(accNum, balance, customerId);
+            } else {
+                throw new SQLException("Akun tidak ditemukan.");
+            }
+        }
+    }
+
+
 
     public void insertToAccounts(Connection connection) throws SQLException {
         String sql = """
@@ -47,4 +66,14 @@ public class SavingsAccount extends BankAccount {
 
         }
     }
+
+    public void updateBalanceInDB(Connection conn) throws SQLException {
+        String sql = "UPDATE accounts SET balance = ? WHERE account_number = ?";
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setDouble(1, balance);
+            stmt.setLong(2, accountNumber);
+            stmt.executeUpdate();
+        }
+    }
+
 }

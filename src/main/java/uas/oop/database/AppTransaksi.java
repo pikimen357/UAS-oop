@@ -5,10 +5,9 @@ import java.sql.SQLException;
 
 public class AppTransaksi {
     public static void main(String[] args) {
-        System.setProperty("org.slf4j.simpleLogger.defaultLogLevel", "off");
 
-        String username = "erico";
-        String passwordInput = "erico356"; // input dari user
+        String username = "siti_amalia";
+        String passwordInput = "siti123"; // input dari user
         String passwordHashDB = null;
         int accountNumber;
         int idCustomer = -1;
@@ -55,25 +54,21 @@ public class AppTransaksi {
         try (Connection connection = ConnectionUtil.getDataSource().getConnection()) {
             connection.setAutoCommit(false);
 
-            Transaction t1 = new Transaction(accountNumber, "deposit", 250_000, "Setoran tunai");
-            Transaction t2 = new Transaction(accountNumber, "withdrawal", 100_000, "Tarik tunai");
+            SavingsAccount account = SavingsAccount.loadFromDB(accountNumber, connection);
 
-            t1.insertToTransaction(connection);
-            t2.insertToTransaction(connection);
+            Transaction t1 = new Transaction(accountNumber, "deposit", 500_000, "Setoran tunai");
+            Transaction t2 = new Transaction(accountNumber, "withdrawal", 200_000, "Tarik tunai");
 
-//            t1.printDetails();
-//            t2.printDetails();
+            t1.process(account, connection);
+            t2.process(account, connection);
 
             connection.commit();
+            System.out.println("Semua transaksi berhasil diproses.");
 
-//            account.showBalance();
-//
-//            account.deposit(250_000);
-//            account.withdraw(100_000);
-//            account.showBalance();
+            account.showBalance();
         } catch (SQLException e) {
-            System.out.println("Kesalahan saat transaksi: " + e.getMessage());
-            e.printStackTrace();
+            System.out.println("Kesalahan transaksi: " + e.getMessage());
         }
+
     }
 }

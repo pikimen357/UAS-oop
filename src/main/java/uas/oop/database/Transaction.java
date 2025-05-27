@@ -19,31 +19,31 @@ public class Transaction {
         this.description = description;
     }
 
-    public void printDetails() {
-        System.out.printf("[%s] %s: Rp %.2f - %s\n", createdAt, type.toUpperCase(), amount, description);
+
+    public void insertToTransaction(Connection connection) throws SQLException {
+        String sql = """
+            INSERT INTO transactions (account_number, type, amount, description)
+            VALUES (?, ?, ?, ?);
+        """;
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setLong(1, accountNumber);
+            preparedStatement.setString(2, type);
+            preparedStatement.setDouble(3, amount);
+            preparedStatement.setString(4, description);
+
+            int updateCount = preparedStatement.executeUpdate();
+            if (updateCount > 0) {
+                System.out.println("Transaction successful");
+            } else{
+                throw new SQLException("Transaction failed");
+            }
+
+        }
     }
 
-//    public void insertToTransaction(Connection connection) throws SQLException {
-//        String sql = """
-//            INSERT INTO transactions (account_number, type, amount, description)
-//            VALUES (?, ?, ?, ?);
-//        """;
-//
-//        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-//            preparedStatement.setLong(1, accountNumber);
-//            preparedStatement.setString(2, type);
-//            preparedStatement.setDouble(3, amount);
-//            preparedStatement.setDouble(4, description);
-//
-//            int updateCount = preparedStatement.executeUpdate();
-//            if (updateCount > 0) {
-//                System.out.println("Insert Accounts successful");
-//            } else {
-//                System.out.println("Insert Accounts failed");
-//                throw new SQLException("Insert accounts gagal");
-//            }
-//
-//        }
-//    }
+    public void printDetails() {
+        System.out.printf("[%s] %s: Rp %.2f - %s\n", type.toUpperCase(), amount, description);
+    }
 }
 

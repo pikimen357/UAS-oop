@@ -10,14 +10,16 @@ public class AppTransaksi {
         String username = "john_doe";
         String passwordInput = "john123"; // input dari user
         String passwordHashDB = null;
+        int accountNumber;
         int idCustomer = -1;
 
         try (Connection conn = ConnectionUtil.getDataSource().getConnection()) {
             var stmt = conn.prepareStatement("""
-                    SELECT customers.id, users.username, users.password_hash
+                    SELECT customers.id, users.username, users.password_hash, a.account_number
                     FROM customers
                     JOIN users ON customers.user_id = users.id
-                    WHERE users.username = ?
+                    JOIN uasoop.accounts a on customers.id = a.customer_id
+                    WHERE users.username = ?;
                 """);
             stmt.setString(1, username);
             var rs = stmt.executeQuery();
@@ -25,15 +27,19 @@ public class AppTransaksi {
             if (rs.next()) {
                 idCustomer = rs.getInt("id");
                 passwordHashDB = rs.getString("password_hash");
+                accountNumber = rs.getInt("account_number");
 
                 // Validasi password
                 if (passwordInput.equals(passwordHashDB)) {
                     System.out.println("Login berhasil. ");
                     System.out.println("Username : " + username);
+                    System.out.println("Account Number : " + accountNumber);
                 } else {
                     System.out.println("Password salah.");
                     return;
                 }
+
+
             } else {
                 System.out.println("Username tidak ditemukan.");
                 return;
@@ -47,16 +53,11 @@ public class AppTransaksi {
         }
 
 
-//        long accountNumber = 470000021L;
-
 //        try (Connection connection = ConnectionUtil.getDataSource().getConnection()) {
 //            connection.setAutoCommit(false);
 //
-//            SavingsAccount account = new SavingsAccount(accountNumber, 500_000, idCustomer);
-//            account.insertToAccounts(connection);
 //
 //            connection.commit();
-//            System.out.println("Akun berhasil dibuat untuk Customer ID: " + idCustomer);
 //
 //            account.showBalance();
 //
@@ -64,8 +65,8 @@ public class AppTransaksi {
 //            account.withdraw(100_000);
 //            account.showBalance();
 //
-//            Transaction t1 = new Transaction(account.getAccountNumber(), "deposit", 250_000, "Setoran tunai");
-//            Transaction t2 = new Transaction(account.getAccountNumber(), "withdrawal", 100_000, "Tarik tunai");
+//            Transaction t1 = new Transaction(accountNumber, "deposit", 250_000, "Setoran tunai");
+//            Transaction t2 = new Transaction(accountNumber, "withdrawal", 100_000, "Tarik tunai");
 //
 //            t1.printDetails();
 //            t2.printDetails();

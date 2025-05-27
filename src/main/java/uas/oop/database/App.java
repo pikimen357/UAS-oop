@@ -1,4 +1,5 @@
 package uas.oop.database;
+import java.sql.SQLException;
 
 /**
  * Hello world!
@@ -6,11 +7,17 @@ package uas.oop.database;
 public class App {
     public static void main(String[] args) {
         Customer customer = new Customer(
-                1, "budi123", "hashed_pw", "customer",
+                "budi123", "hashed_pw", "customer","budi@gmail.com",
                 "Budi Santoso", "1234567890123456", "081234567890", "Jl. Mawar No. 5"
         );
 
         SavingsAccount account = new SavingsAccount(10000001L, 500_000);
+
+        try {
+            customer.insertToCustomer(); // hanya bagian ini yang berpotensi SQLException
+        } catch (SQLException e) {
+            System.out.println("Gagal insert customer: " + e.getMessage());
+        }
 
         customer.showInfo();
         account.showBalance();

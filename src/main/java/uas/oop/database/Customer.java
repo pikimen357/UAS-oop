@@ -24,22 +24,6 @@ public class Customer extends User {
         System.out.println("Customer: " + fullName + ", Phone: " + phone);
     }
 
-//    public void testExecuteUpdate () throws SQLException {
-//        Connection connection = ConnectionUtil.getDataSource().getConnection();
-//        Statement statement = connection.createStatement();
-//
-//        String sql = """
-//        INSERT INTO customer (fullName, nik, phone, address)
-//        """;
-//
-//        int updateCount = statement.executeUpdate(sql);
-//        System.out.println(updateCount);
-//
-//        statement.close();
-//        connection.close();
-//    }
-
-
     public String getFullName() {  return fullName;  }
 
     public void setFullName(String fullName) { this.fullName = fullName; }
@@ -54,5 +38,35 @@ public class Customer extends User {
 
     public String getNik() { return nik; }
     public String getAddress() { return address; }
+
+    public void insertToCustomer() throws SQLException {
+        int userId = super.insertToUser(); // simpan user, dapatkan id dari DB
+
+        Connection connection = ConnectionUtil.getDataSource().getConnection();
+
+        String sql = """
+        INSERT INTO customers (user_id, full_name, nik, phone, address)
+        VALUES (?, ?, ?, ?, ?)
+    """;
+
+        var preparedStatement = connection.prepareStatement(sql);
+
+        preparedStatement.setInt(1, userId); // gunakan id dari DB
+        preparedStatement.setString(2, fullName);
+        preparedStatement.setString(3, nik);
+        preparedStatement.setString(4, phone);
+        preparedStatement.setString(5, address);
+
+        int updateCount = preparedStatement.executeUpdate();
+        if (updateCount > 0) {
+            System.out.println("Insert Customer successful");
+        } else {
+            System.out.println("Insert Customer failed");
+        }
+
+        preparedStatement.close();
+        connection.close();
+    }
+
 }
 

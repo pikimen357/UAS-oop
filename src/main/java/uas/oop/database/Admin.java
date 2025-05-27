@@ -1,8 +1,8 @@
 package uas.oop.database;
 
 public class Admin extends User {
-    public Admin(int id, String username, String passwordHash) {
-        super(id, username, passwordHash, "admin");
+    public Admin( String username, String passwordHash,String email) {
+        super( username, passwordHash, "admin", email);
     }
 
     @Override

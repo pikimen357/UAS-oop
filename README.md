@@ -101,5 +101,18 @@ Ikuti langkah-langkah berikut untuk menjalankan aplikasi ini di lokal Anda:
    cd UAS-oop
 
 3. **Jalankan program beserta databasenya**
+   ```sql
+    CREATE DATABASE <nama_database>;
+    USE <nama_database>;
+4. **Buat Tabel nya seperti tabel diatas**
+5. **Compile dan jalankan aplikasi**
+   ```bash
+    mvn archetype:generate
+6. **Sesuaikan konfigurasi koneksi database**
+   ```java
+    String url = "jdbc:mysql://localhost:3306/<nama_database>";
+    String user = "root";
+    String password = "your_password";
 
 
+   

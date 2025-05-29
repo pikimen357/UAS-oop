@@ -58,8 +58,8 @@ Dependensi diatas cukup lengkap yang terdapat pada  (`pom.xml`)
 | Kolom     | Tipe Data | Keterangan                                  |
 |-----------|-----------|---------------------------------------------|
 | account_number        | bigint       | Primary Key                 |
-| customer_id   | decimal(18,2)       | Foreign Key → `users(id)`                   |
-| balance   | DOUBLE    | Saldo akun                                   |
+| customer_id   |    int    | Foreign Key → `users(id)`                   |
+| balance   | decimal(18,2)    |                                  |
 | created_at  | timestamp  | Default current timestamp       |
 
 ### Tabel `transactions`
@@ -67,11 +67,11 @@ Dependensi diatas cukup lengkap yang terdapat pada  (`pom.xml`)
 | Kolom       | Tipe Data    | Keterangan                                  |
 |-------------|--------------|---------------------------------------------|
 | id          | INT          | Primary Key, Auto Increment                 |
-| account_id  | INT          | Foreign Key → `accounts(id)`               |
-| type        | VARCHAR(20)  | Jenis transaksi (deposit / withdrawal)     |
-| amount      | DOUBLE       | Jumlah uang yang ditransaksikan            |
-| description | TEXT         | Keterangan transaksi                        |
-| timestamp   | TIMESTAMP    | Waktu transaksi (default: NOW)             |
+| account_number | bigint          | Foreign Key → `accounts(account_number)`               |
+| type        | enum('deposit','withdrawal')  | Not null     |
+| amount      | decimal(18,2)       | Not null            |
+| description | varchar(255)        |                        |
+| created_at   | TIMESTAMP    | Waktu transaksi (default: NOW)             |
 
 
 ### 🛠️ Cara Menjalankan

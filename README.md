@@ -57,9 +57,10 @@ Dependensi diatas cukup lengkap yang terdapat pada  (`pom.xml`)
 
 | Kolom     | Tipe Data | Keterangan                                  |
 |-----------|-----------|---------------------------------------------|
-| id        | INT       | Primary Key, Auto Increment                 |
-| user_id   | INT       | Foreign Key → `users(id)`                   |
+| account_number        | bigint       | Primary Key                 |
+| customer_id   | decimal(18,2)       | Foreign Key → `users(id)`                   |
 | balance   | DOUBLE    | Saldo akun                                   |
+| created_at  | timestamp  | Default current timestamp       |
 
 ### Tabel `transactions`
 

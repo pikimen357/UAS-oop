@@ -58,7 +58,7 @@ Dependensi diatas cukup lengkap yang terdapat pada  (`pom.xml`)
 | Kolom       | Tipe Data      | Keterangan                                         |
 | ----------- | -------------- | -------------------------------------------------- |
 | `id`        | `INT`          | Primary Key, Auto Increment                        |
-| `user_id`   | `INT`          | Tidak boleh kosong, Foreign Key ke `customers(id)` |
+| `user_id`   | `INT`          | Tidak boleh kosong, Foreign Key ke `users(id)` |
 | `full_name` | `VARCHAR(100)` | Tidak boleh kosong                                 |
 | `nik`       | `VARCHAR(16)`  | Tidak boleh kosong, unik                           |
 | `phone`     | `VARCHAR(20)`  | Boleh kosong                                       |
@@ -69,12 +69,12 @@ Dependensi diatas cukup lengkap yang terdapat pada  (`pom.xml`)
 
 ### Tabel `accounts`
 
-| Kolom     | Tipe Data | Keterangan                                  |
-|-----------|-----------|---------------------------------------------|
-| account_number        | bigint       | Primary Key                 |
-| customer_id   |    int    | Foreign Key → `users(id)`                   |
-| balance   | decimal(18,2)    |                                  |
-| created_at  | timestamp  | Default current timestamp       |
+| Kolom       | Tipe Data      | Keterangan                                         |
+| ----------- | -------------- | -------------------------------------------------- |
+| `account_number`        | `bigint`          | Primary Key, Auto Increment                        |
+| `customer_id `   | `int`          | Tidak boleh kosong, Foreign Key ke `customer(id)` |
+| `balance` | `decimal(18,2)` | Tidak boleh kosong                                 |
+| `created_at`    | `TIMESTAMP`                | Default current timestamp     |
 
 ### Tabel `transactions`
 

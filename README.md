@@ -48,7 +48,7 @@ Dependensi diatas cukup lengkap yang terdapat pada  (`pom.xml`)
 | id        | INT           | Primary Key, Auto Increment |
 | username  | VARCHAR(50)   | Tidak boleh kosong         |
 | password_hash  | varchar(255)  | Tidak boleh kosong         |
-| role  | enum('admin','customer')  Tidak boleh kosong, default 'customer'         |
+| role  | enum('admin','customer') | Tidak boleh kosong, default 'customer'         |
 | created_at  | timestamp  | Default current timestamp       |
 | email  | varchar(250)  | Tidak boleh kosong         |
 

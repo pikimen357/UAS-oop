@@ -52,6 +52,18 @@ Dependensi diatas cukup lengkap yang terdapat pada  (`pom.xml`)
 | created_at  | timestamp  | Default current timestamp       |
 | email  | varchar(250)  | Tidak boleh kosong         |
 
+### Tabel `customers`
+
+| Kolom           | Tipe Data                  | Keterangan                                |
+| --------------- | -------------------------- | ----------------------------------------- |
+| `id`            | `INT`                      | Primary Key, Auto Increment               |
+| `username`      | `VARCHAR(50)`              | Tidak boleh kosong, unik                  |
+| `password_hash` | `VARCHAR(255)`             | Tidak boleh kosong                        |
+| `role`          | `ENUM('admin','customer')` | Tidak boleh kosong, default `'customer'`  |
+| `created_at`    | `TIMESTAMP`                | Boleh kosong, default `CURRENT_TIMESTAMP` |
+| `email`         | `VARCHAR(250)`             | Tidak boleh kosong, unik                  |
+
+
 
 ### Tabel `accounts`
 

@@ -39,7 +39,7 @@ Aplikasi Java ini menggunakan **Maven** untuk mengelola dependensi. Pastikan And
 ```
 Dependensi diatas cukup lengkap yang terdapat pada  (`pom.xml`)
 
-## 📊 Struktur Tabel Database
+### 📊 Struktur Tabel Database
 
 ### Tabel `users`
 

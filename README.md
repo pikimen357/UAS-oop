@@ -36,3 +36,18 @@ Aplikasi Java ini menggunakan **Maven** untuk mengelola dependensi. Pastikan And
         <version>8.0.33</version>
     </dependency>
 </dependencies>
+
+## 🛠️ Cara Menjalankan
+
+Ikuti langkah-langkah berikut untuk menjalankan aplikasi ini di lokal Anda:
+
+1. **Clone repositori**
+   ```bash
+   git clone https://github.com/pikimen357/UAS-oop
+2. **Masuk ke direktori proyek**
+   ```bash
+   cd UAS-oop
+
+3. **Jalankan program beserta databasenya**
+
+

@@ -36,8 +36,9 @@ Aplikasi Java ini menggunakan **Maven** untuk mengelola dependensi. Pastikan And
         <version>8.0.33</version>
     </dependency>
 </dependencies>
+```
 
-## 🛠️ Cara Menjalankan
+### 🛠️ Cara Menjalankan
 
 Ikuti langkah-langkah berikut untuk menjalankan aplikasi ini di lokal Anda:
 

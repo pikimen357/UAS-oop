@@ -39,6 +39,36 @@ Aplikasi Java ini menggunakan **Maven** untuk mengelola dependensi. Pastikan And
 ```
 Dependensi diatas cukup lengkap yang terdapat pada  (`pom.xml`)
 
+## 📊 Struktur Tabel Database
+
+### Tabel `users`
+
+| Kolom     | Tipe Data     | Keterangan                 |
+|-----------|---------------|----------------------------|
+| id        | INT           | Primary Key, Auto Increment |
+| username  | VARCHAR(50)   | Tidak boleh kosong         |
+| password  | VARCHAR(100)  | Tidak boleh kosong         |
+
+### Tabel `accounts`
+
+| Kolom     | Tipe Data | Keterangan                                  |
+|-----------|-----------|---------------------------------------------|
+| id        | INT       | Primary Key, Auto Increment                 |
+| user_id   | INT       | Foreign Key → `users(id)`                   |
+| balance   | DOUBLE    | Saldo akun                                   |
+
+### Tabel `transactions`
+
+| Kolom       | Tipe Data    | Keterangan                                  |
+|-------------|--------------|---------------------------------------------|
+| id          | INT          | Primary Key, Auto Increment                 |
+| account_id  | INT          | Foreign Key → `accounts(id)`               |
+| type        | VARCHAR(20)  | Jenis transaksi (deposit / withdrawal)     |
+| amount      | DOUBLE       | Jumlah uang yang ditransaksikan            |
+| description | TEXT         | Keterangan transaksi                        |
+| timestamp   | TIMESTAMP    | Waktu transaksi (default: NOW)             |
+
+
 ### 🛠️ Cara Menjalankan
 
 Ikuti langkah-langkah berikut untuk menjalankan aplikasi ini di lokal Anda:

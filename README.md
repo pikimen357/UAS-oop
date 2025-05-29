@@ -37,7 +37,7 @@ Aplikasi Java ini menggunakan **Maven** untuk mengelola dependensi. Pastikan And
     </dependency>
 </dependencies>
 ```
-Dependensi diatas cukup lengkap yang terdapat pada pom.xml 
+Dependensi diatas cukup lengkap yang terdapat pada  (`pom.xml`)
 
 ### 🛠️ Cara Menjalankan
 

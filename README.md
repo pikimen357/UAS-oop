@@ -78,14 +78,15 @@ Dependensi diatas cukup lengkap yang terdapat pada  (`pom.xml`)
 
 ### Tabel `transactions`
 
-| Kolom       | Tipe Data    | Keterangan                                  |
-|-------------|--------------|---------------------------------------------|
-| id          | INT          | Primary Key, Auto Increment                 |
-| account_number | bigint          | Foreign Key → `accounts(account_number)`               |
-| type        | enum('deposit','withdrawal')  | Not null     |
-| amount      | decimal(18,2)       | Not null            |
-| description | varchar(255)        |                        |
-| created_at   | TIMESTAMP    | Waktu transaksi (default: NOW)             |
+| Kolom            | Tipe Data                      | Keterangan                               |
+| ---------------- | ------------------------------ | ---------------------------------------- |
+| `id`             | `INT`                          | Primary Key, Auto Increment              |
+| `account_number` | `BIGINT`                       | Foreign Key → `accounts(account_number)` |
+| `type`           | `ENUM('deposit','withdrawal')` | Not null                                 |
+| `amount`         | `DECIMAL(18,2)`                | Not null                                 |
+| `description`    | `VARCHAR(255)`                 | Optional                                 |
+| `created_at`     | `TIMESTAMP`                    | Waktu transaksi (default: `NOW()`)       |
+
 
 
 ### 🛠️ Cara Menjalankan

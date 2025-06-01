@@ -103,16 +103,6 @@ public class AppTransaksi {
                 connection.rollback();
             }
 
-//            SavingsAccount account = SavingsAccount.loadFromDB(accountNumber, connection);
-//
-//            Transaction t1 = new Transaction(accountNumber, "deposit", 500_000, "Setoran tunai");
-//
-//            t1.process(account, connection);
-//
-//            connection.commit();
-//            System.out.println("Semua transaksi berhasil diproses.");
-
-
         } catch (SQLException e) {
             System.out.println("Kesalahan transaksi: " + e.getMessage());
         }

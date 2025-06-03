@@ -35,10 +35,25 @@ public class AppTransaksi extends JFrame {
         setResizable(false);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        // Background panel
+        // 🔵 Panel utama (pakai BorderLayout supaya header di atas)
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBackground(new Color(180, 200, 245));
+
+        // 🔵 Header Panel
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setBackground(new Color(65, 105, 225));
+        headerPanel.setPreferredSize(new Dimension(getWidth(), 50));
+
+        JLabel headerLabel = new JLabel("  Bank Plecit"); // spasi di awal untuk margin kiri
+        headerLabel.setForeground(Color.WHITE);
+        headerLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
+
+        headerPanel.add(headerLabel, BorderLayout.WEST);
+
+        // 🔵 Background panel untuk isi transaksi
         JPanel background = new JPanel(new GridBagLayout());
+        background.setOpaque(false); // biar header kelihatan
         background.setBackground(new Color(180, 200, 245));
-        add(background);
 
         // Container panel (card) dengan RoundedPanel
         RoundedPanel card = new RoundedPanel(20);
@@ -56,9 +71,16 @@ public class AppTransaksi extends JFrame {
         // Tambahkan card ke background
         background.add(card);
 
+        // 🔵 Tambahkan header dan background panel ke mainPanel
+        mainPanel.add(headerPanel, BorderLayout.NORTH);
+        mainPanel.add(background, BorderLayout.CENTER);
+
+        add(mainPanel);
+
         // Tampilkan saldo awal
         updateBalanceDisplay();
     }
+
 
     public void header(){
         headerPanel = new JPanel();

@@ -15,12 +15,24 @@ public class Login extends JFrame {
         setResizable(false);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
+        // Panel utama menggunakan BorderLayout
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBackground(new Color(180, 200, 245));
+
+        // 🔵 Header Panel
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setBackground(new Color(65, 105, 225));
+        headerPanel.setPreferredSize(new Dimension(getWidth(), 70));
+
+        JLabel headerLabel = new JLabel("  Bank Plecit"); // spasi untuk margin kiri
+        headerLabel.setForeground(Color.BLACK);
+        headerLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
+
+        headerPanel.add(headerLabel, BorderLayout.WEST);
+
+        // 🔵 Panel Login di tengah
         JPanel background = new JPanel(new GridBagLayout());
-        background.setBackground(new Color(180, 200, 245));
-
-        add(background);
-
-        // Gunakan RoundedPanel
+        background.setOpaque(false); // supaya warna header tidak tertutup
         RoundedPanel container = new RoundedPanel(20);
         container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
         container.setBackground(Color.WHITE);
@@ -68,18 +80,25 @@ public class Login extends JFrame {
 
         background.add(container);
 
+        // Tambahkan header dan panel login ke mainPanel
+        mainPanel.add(headerPanel, BorderLayout.NORTH);
+        mainPanel.add(background, BorderLayout.CENTER);
+
+        add(mainPanel);
+
+        // Aksi tombol login (tetap sama)
         loginButton.addActionListener(e -> {
             String username = usernameField.getText();
             String password = String.valueOf(passwordField.getPassword());
 
             try (Connection conn = ConnectionUtil.getDataSource().getConnection()) {
                 var stmt = conn.prepareStatement("""
-                    SELECT customers.id, users.username, users.password_hash, a.account_number
-                    FROM customers
-                    JOIN users ON customers.user_id = users.id
-                    JOIN uasoop.accounts a ON customers.id = a.customer_id
-                    WHERE users.username = ?;
-                """);
+                SELECT customers.id, users.username, users.password_hash, a.account_number
+                FROM customers
+                JOIN users ON customers.user_id = users.id
+                JOIN uasoop.accounts a ON customers.id = a.customer_id
+                WHERE users.username = ?;
+            """);
                 stmt.setString(1, username);
                 var rs = stmt.executeQuery();
 
@@ -91,8 +110,9 @@ public class Login extends JFrame {
                     if (password.equals(passwordHashDB)) {
                         JOptionPane.showMessageDialog(this, "Login " + username + " berhasil (" + accountNumber + ")");
                         dispose();
-                        new AppTransaksi(accountNumber, username, customerId).setVisible(true);
+                        new Dashboard(accountNumber, username, customerId).setVisible(true);
 //                        new Dashboard().setVisible(true);
+//                        new AppTransaksi(accountNumber, username, customerId).setVisible(true);
                     } else {
                         JOptionPane.showMessageDialog(this, "Password salah!");
                         usernameField.setText("");
@@ -112,6 +132,7 @@ public class Login extends JFrame {
             }
         });
     }
+
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new Login().setVisible(true));

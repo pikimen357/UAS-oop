@@ -2,84 +2,92 @@ package uas.oop.database;
 
 import javax.swing.*;
 import java.awt.*;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 public class Dashboard extends JFrame {
 
+
+    // 🔵 Deklarasi variabel di dalam class, bukan di dalam constructor
+    private long loggedInAccountNumber;
+    private String loggedInUsername;
+    private int loggedInCustomerId;
+    // 🔵 Constructor tambahan untuk inisialisasi data
+    public Dashboard(long accountNumber, String username, int customerId) {
+        this(); // Panggil constructor default
+        this.loggedInAccountNumber = accountNumber;
+        this.loggedInUsername = username;
+        this.loggedInCustomerId = customerId;
+    }
+
     public Dashboard() {
+
+
         setTitle("Dashboard Mobile Banking");
         setSize(400, 700);
         setLocationRelativeTo(null);
         setResizable(false);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        // Background panel
-        JPanel background = new JPanel(new GridBagLayout());
-        background.setBackground(new Color(180, 200, 245));
-        add(background);
+        // Panel utama (pakai BorderLayout supaya header di atas)
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBackground(new Color(180, 200, 245));
 
-        // Container/card panel
-//        JPanel card = new JPanel();
-        RoundedPanel card = new RoundedPanel(20);
-        card.setPreferredSize(new Dimension(320, 300));
-        card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
-        card.setBackground(Color.WHITE);
-        card.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(220, 220, 220), 1),
-                BorderFactory.createEmptyBorder(30, 20, 30, 20)
-        ));
-        card.setAlignmentX(Component.CENTER_ALIGNMENT);
+        // Header Panel
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setBackground(new Color(65, 105, 225));
+        headerPanel.setPreferredSize(new Dimension(getWidth(), 50));
 
-        // Judul dashboard
-        JLabel title = new JLabel("Welcome to Mobile Banking");
-        title.setFont(new Font("Segoe UI", Font.BOLD, 18));
-        title.setForeground(new Color(25, 25, 112));
-        title.setAlignmentX(Component.CENTER_ALIGNMENT);
-        card.add(title);
-        card.add(Box.createRigidArea(new Dimension(0, 20)));
+        JLabel headerLabel = new JLabel("  Bank Plecit"); // spasi margin kiri
+        headerLabel.setForeground(Color.WHITE);
+        headerLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        headerPanel.add(headerLabel, BorderLayout.WEST);
 
-        // Simulasi data fetch dari DB
-        try (Connection conn = ConnectionUtil.getDataSource().getConnection()) {
-            var stmt = conn.prepareStatement("""
-                SELECT customers.id, users.username, a.account_number, a.balance
-                FROM customers
-                JOIN users ON customers.user_id = users.id
-                JOIN uasoop.accounts a ON customers.id = a.customer_id
-                LIMIT 1;
-            """);
+        // Panel background untuk menu (pakai GridLayout agar rapi)
+        JPanel menuPanel = new JPanel(new GridLayout(3, 2, 30, 20)); // 3 baris, 2 kolom
+        menuPanel.setOpaque(false);
+        menuPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // padding
 
-            ResultSet rs = stmt.executeQuery();
-            if (rs.next()) {
-                String username = rs.getString("username");
-                long accountNumber = rs.getLong("account_number");
-                double balance = rs.getDouble("balance");
+        // Contoh card menu
+        menuPanel.add(createMenuCard("Tarik Tunai", "src/main/resources/assets/transfer.png"));
+        menuPanel.add(createMenuCard("Setor Tunai", "src/main/resources/assets/payment.png"));
+        menuPanel.add(createMenuCard("Info", "src/main/resources/assets/img.png"));
+        menuPanel.add(createMenuCard("e-Commerce", "src/main/resources/assets/chart.png"));
+        menuPanel.add(createMenuCard("Admin", "src/main/resources/assets/admin.png"));
+        menuPanel.add(createMenuCard("QR", "src/main/resources/assets/qr.png"));
 
-                JLabel userLabel = new JLabel("👤 Username: " + username);
-                JLabel accLabel = new JLabel("🏦 Account Number: " + accountNumber);
-                JLabel balLabel = new JLabel("💰 Balance: Rp " + String.format("%,.2f", balance));
+        // Tambahkan header dan menuPanel ke mainPanel
+        mainPanel.add(headerPanel, BorderLayout.NORTH);
+        mainPanel.add(menuPanel, BorderLayout.CENTER);
 
-                for (JLabel label : new JLabel[]{userLabel, accLabel, balLabel}) {
-                    label.setFont(new Font("Segoe UI", Font.PLAIN, 16));
-                    label.setAlignmentX(Component.CENTER_ALIGNMENT);
-                    label.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
-                    card.add(label);
-                }
-
-            } else {
-                card.add(new JLabel("Data tidak ditemukan."));
-            }
-
-            rs.close();
-            stmt.close();
-        } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Gagal mengambil data!");
-            e.printStackTrace();
-        }
-
-        background.add(card);
+        add(mainPanel);
     }
+
+    /**
+     * Membuat satu card menu bergaya RoundedPanel dengan gambar icon dan label
+     */
+    private RoundedPanel createMenuCard(String text, String imagePath) {
+        RoundedPanel card = new RoundedPanel(20);
+        card.setPreferredSize(new Dimension(90, 75));
+        card.setLayout(new BorderLayout());
+        card.setBackground(Color.WHITE);
+        card.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        // 🔵 Gunakan gambar sebagai icon
+        ImageIcon icon = new ImageIcon(imagePath);
+
+        // 🔵 Ukuran icon (resize agar tidak terlalu besar)
+        Image img = icon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+        JLabel iconLabel = new JLabel(new ImageIcon(img), SwingConstants.CENTER);
+
+        // 🔵 Text label
+        JLabel textLabel = new JLabel(text, SwingConstants.CENTER);
+        textLabel.setFont(new Font("Segoe UI", Font.BOLD, 17));
+
+        card.add(iconLabel, BorderLayout.CENTER);
+        card.add(textLabel, BorderLayout.SOUTH);
+
+        return card;
+    }
+
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new Dashboard().setVisible(true));

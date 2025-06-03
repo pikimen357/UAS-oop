@@ -5,12 +5,10 @@ import java.awt.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-
-
 public class Login extends JFrame {
     public Login() {
         setTitle("Bank Plecit");
-        setSize(400, 700);
+        setSize(450, 850);
         setLocationRelativeTo(null);
         setResizable(false);
         setDefaultCloseOperation(EXIT_ON_CLOSE);

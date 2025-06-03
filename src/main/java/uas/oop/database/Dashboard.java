@@ -41,18 +41,24 @@ public class Dashboard extends JFrame {
         headerLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
         headerPanel.add(headerLabel, BorderLayout.WEST);
 
+        JLabel headerLabel2 = new JLabel("Logout  "); // spasi margin kiri
+        headerLabel2.setForeground(Color.WHITE);
+        headerLabel2.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        headerPanel.add(headerLabel2, BorderLayout.EAST);
+
         // Panel background untuk menu (pakai GridLayout agar rapi)
         JPanel menuPanel = new JPanel(new GridLayout(3, 2, 30, 20)); // 3 baris, 2 kolom
         menuPanel.setOpaque(false);
         menuPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // padding
 
         // Contoh card menu
+        menuPanel.add(createMenuCard("Akun", "src/main/resources/assets/admin.png"));
+        menuPanel.add(createMenuCard("Info", "src/main/resources/assets/img.png"));
         menuPanel.add(createMenuCard("Tarik Tunai", "src/main/resources/assets/transfer.png"));
         menuPanel.add(createMenuCard("Setor Tunai", "src/main/resources/assets/payment.png"));
-        menuPanel.add(createMenuCard("Info", "src/main/resources/assets/img.png"));
-        menuPanel.add(createMenuCard("e-Commerce", "src/main/resources/assets/chart.png"));
-        menuPanel.add(createMenuCard("Admin", "src/main/resources/assets/admin.png"));
-        menuPanel.add(createMenuCard("QR", "src/main/resources/assets/qr.png"));
+        menuPanel.add(createMenuCard("Transfer", "src/main/resources/assets/trnsfr.png"));
+        menuPanel.add(createMenuCard("Pulsa & Data", "src/main/resources/assets/chart.png"));
+
 
         // Tambahkan header dan menuPanel ke mainPanel
         mainPanel.add(headerPanel, BorderLayout.NORTH);

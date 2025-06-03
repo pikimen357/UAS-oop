@@ -51,6 +51,8 @@ public class AppRegister {
 
             // Buat akun
 
+            System.out.println("=================\nAccount Number: " + accountNumber);
+
             Scanner sc = new Scanner(System.in);
             System.out.print("Saldo awal : ");
             double saldo = sc.nextDouble();
@@ -59,7 +61,7 @@ public class AppRegister {
             account.insertToAccounts(connection);
 
             connection.commit();
-            System.out.println("Registrasi berhasil!");
+            System.out.println("======================\nRegistrasi berhasil!");
             System.out.println("Customer ID: " + customer.getIdUser());
             System.out.println("Account Number: " + account.getAccountNumber());
             System.out.println("Balance : " + account.getBalance());

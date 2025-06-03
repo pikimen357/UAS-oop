@@ -17,10 +17,8 @@ public class AppTransaksi {
         System.out.print("Enter password : ");
         String passwordInput = scan.nextLine();
 
-//        String username = "siti_amalia";
-//        String passwordInput = "siti123"; // input dari user
         String passwordHashDB = null;
-        int accountNumber;
+        long accountNumber;
         int idCustomer = -1;
 
         try (Connection conn = ConnectionUtil.getDataSource().getConnection()) {
@@ -37,7 +35,7 @@ public class AppTransaksi {
             if (rs.next()) {
                 idCustomer = rs.getInt("id");
                 passwordHashDB = rs.getString("password_hash");
-                accountNumber = rs.getInt("account_number");
+                accountNumber = rs.getLong("account_number");
 
                 // Validasi password
                 if (passwordInput.equals(passwordHashDB)) {

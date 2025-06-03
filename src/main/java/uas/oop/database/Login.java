@@ -1,116 +1,124 @@
-
 package uas.oop.database;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Scanner;
-import java.security.SecureRandom;
 import javax.swing.*;
 import java.awt.*;
-
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public class Login extends JFrame {
     public Login() {
-        setTitle("Sistem Informasi Akademis");
-        setSize(600, 400);
+        setTitle("Bank Plecit");
+        setSize(400, 700);
         setLocationRelativeTo(null);
         setResizable(false);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-//        bikin panel dengan title login
-        JPanel panel = new JPanel(new BorderLayout());
+        // Panel latar belakang (wrap semuanya)
+        JPanel background = new JPanel(new GridBagLayout());
+        background.setBackground(new Color(240, 248, 255)); // soft blue
+        add(background);
 
-        add(panel);
+        // Panel kontainer (form login)
+        JPanel container = new JPanel();
+        container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
+        container.setBackground(Color.WHITE);
+        container.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(200, 200, 200)),
+                BorderFactory.createEmptyBorder(30, 40, 30, 40)
+        ));
+        container.setPreferredSize(new Dimension(350, 300));
 
-        JLabel label = new JLabel("Please Login", JLabel.CENTER);
-        label.setFont(new Font("Tahoma", Font.BOLD, 19));
-        panel.add(label, BorderLayout.NORTH);
+        // Label judul
+        JLabel title = new JLabel("Please Login");
+        title.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        title.setForeground(new Color(25, 25, 112));
+        title.setAlignmentX(Component.LEFT_ALIGNMENT);
+        container.add(title);
+        container.add(Box.createRigidArea(new Dimension(0, 20))); // spacing
 
-        JButton button = new JButton("Login");
-        panel.add(button, BorderLayout.SOUTH);
-
-//        bikin field
-        JPanel fieldPanel = new JPanel(new GridLayout(2, 2));
-
-//        bikin field username
-        fieldPanel.add(new JLabel("Username:"));
+        // Field username
+        JLabel usernameLabel = new JLabel("Username");
+        usernameLabel.setFont(new Font("Segoe UI", Font.ITALIC, 14));
         JTextField usernameField = new JTextField();
-        fieldPanel.add(usernameField);
+        usernameField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        usernameField.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-//        bikin field password
-        fieldPanel.add(new JLabel("Password:"));
+        container.add(usernameLabel);
+        container.add(Box.createRigidArea(new Dimension(0, 5)));
+        container.add(usernameField);
+        container.add(Box.createRigidArea(new Dimension(0, 15)));
+
+        // Field password
+        JLabel passwordLabel = new JLabel("Password");
+        passwordLabel.setFont(new Font("Segoe UI", Font.ITALIC, 14));
         JPasswordField passwordField = new JPasswordField();
-        fieldPanel.add(passwordField);
+        passwordField.setMaximumSize(new Dimension(Integer.MAX_VALUE, 30));
+        passwordField.setAlignmentX(Component.LEFT_ALIGNMENT);
 
-        panel.add(fieldPanel);
+        container.add(passwordLabel);
+        container.add(Box.createRigidArea(new Dimension(0, 5)));
+        container.add(passwordField);
+        container.add(Box.createRigidArea(new Dimension(0, 20)));
 
-        button.addActionListener(e -> {
+        // Tombol login
+        JButton loginButton = new JButton("Login");
+        loginButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        loginButton.setBackground(new Color(65, 105, 225));
+        loginButton.setForeground(Color.WHITE);
+        loginButton.setFocusPainted(false);
+        loginButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        loginButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+        loginButton.setPreferredSize(new Dimension(100, 30));
+        container.add(loginButton);
+
+        // Tambahkan container ke background (pusat)
+        background.add(container);
+
+        // Aksi login
+        loginButton.addActionListener(e -> {
             String username = usernameField.getText();
             String password = String.valueOf(passwordField.getPassword());
-
-            String passwordHashDB = null;
-            long accountNumber;
-            int idCustomer = -1;
 
             try (Connection conn = ConnectionUtil.getDataSource().getConnection()) {
                 var stmt = conn.prepareStatement("""
                     SELECT customers.id, users.username, users.password_hash, a.account_number
                     FROM customers
                     JOIN users ON customers.user_id = users.id
-                    JOIN uasoop.accounts a on customers.id = a.customer_id
+                    JOIN uasoop.accounts a ON customers.id = a.customer_id
                     WHERE users.username = ?;
                 """);
                 stmt.setString(1, username);
                 var rs = stmt.executeQuery();
 
                 if (rs.next()) {
-                    idCustomer = rs.getInt("id");
-                    passwordHashDB = rs.getString("password_hash");
-                    accountNumber = rs.getLong("account_number");
+                    String passwordHashDB = rs.getString("password_hash");
+                    long accountNumber = rs.getLong("account_number");
 
-                    // Validasi password
                     if (password.equals(passwordHashDB)) {
-                        System.out.println("Login berhasil. ");
-                        System.out.println("Username : " + username);
-                        System.out.println("Account Number : " + accountNumber);
-                        String msg = "Login " + username + " berhasil (" + accountNumber + ")";
-                        JOptionPane.showMessageDialog(this, msg);
+                        JOptionPane.showMessageDialog(this, "Login " + username + " berhasil (" + accountNumber + ")");
                         dispose();
+                        new Dashboard().setVisible(true);
                     } else {
-                        JOptionPane.showMessageDialog(this, "Wrong Username or Password");
+                        JOptionPane.showMessageDialog(this, "Password salah!");
                         usernameField.setText("");
                         passwordField.setText("");
-                        return;
                     }
-
                 } else {
-                    JOptionPane.showMessageDialog(this, "Wrong Username");
+                    JOptionPane.showMessageDialog(this, "Username tidak ditemukan!");
                     usernameField.setText("");
                     passwordField.setText("");
-                    return;
                 }
 
                 rs.close();
                 stmt.close();
-            } catch (SQLException err) {
-                System.out.println("Gagal mengambil data: " + err.getMessage());
-                return;
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, "Gagal terhubung ke database!");
+                ex.printStackTrace();
             }
-
-//            if (username.equals("Admin") && password.equals("admin123")) {
-//                JOptionPane.showMessageDialog(this, "GREAT!! Login Successful");
-//                dispose();
-////                new Dashboard().setVisible(true);
-//            } else {
-//                JOptionPane.showMessageDialog(this, "Wrong Username or Password");
-//                usernameField.setText("");
-//                passwordField.setText("");
-//            }
         });
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(
-                () -> new Login().setVisible(true)
-        );
+        SwingUtilities.invokeLater(() -> new Login().setVisible(true));
     }
 }

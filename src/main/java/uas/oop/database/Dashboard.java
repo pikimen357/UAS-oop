@@ -17,11 +17,12 @@ public class Dashboard extends JFrame {
 
         // Background panel
         JPanel background = new JPanel(new GridBagLayout());
-        background.setBackground(new Color(240, 248, 255)); // #F0F8FF
+        background.setBackground(new Color(180, 200, 245));
         add(background);
 
         // Container/card panel
-        JPanel card = new JPanel();
+//        JPanel card = new JPanel();
+        RoundedPanel card = new RoundedPanel(20);
         card.setPreferredSize(new Dimension(320, 300));
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
         card.setBackground(Color.WHITE);

@@ -5,6 +5,8 @@ import java.awt.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+
+
 public class Login extends JFrame {
     public Login() {
         setTitle("Bank Plecit");
@@ -13,30 +15,25 @@ public class Login extends JFrame {
         setResizable(false);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        // Panel latar belakang (wrap semuanya)
         JPanel background = new JPanel(new GridBagLayout());
-        background.setBackground(new Color(240, 248, 255)); // soft blue
+        background.setBackground(new Color(180, 200, 245));
+
         add(background);
 
-        // Panel kontainer (form login)
-        JPanel container = new JPanel();
+        // Gunakan RoundedPanel
+        RoundedPanel container = new RoundedPanel(20);
         container.setLayout(new BoxLayout(container, BoxLayout.Y_AXIS));
         container.setBackground(Color.WHITE);
-        container.setBorder(BorderFactory.createCompoundBorder(
-                BorderFactory.createLineBorder(new Color(200, 200, 200)),
-                BorderFactory.createEmptyBorder(30, 40, 30, 40)
-        ));
+        container.setBorder(BorderFactory.createEmptyBorder(30, 40, 30, 40));
         container.setPreferredSize(new Dimension(350, 300));
 
-        // Label judul
         JLabel title = new JLabel("Please Login");
         title.setFont(new Font("Segoe UI", Font.BOLD, 20));
         title.setForeground(new Color(25, 25, 112));
         title.setAlignmentX(Component.LEFT_ALIGNMENT);
         container.add(title);
-        container.add(Box.createRigidArea(new Dimension(0, 20))); // spacing
+        container.add(Box.createRigidArea(new Dimension(0, 20)));
 
-        // Field username
         JLabel usernameLabel = new JLabel("Username");
         usernameLabel.setFont(new Font("Segoe UI", Font.ITALIC, 14));
         JTextField usernameField = new JTextField();
@@ -48,7 +45,6 @@ public class Login extends JFrame {
         container.add(usernameField);
         container.add(Box.createRigidArea(new Dimension(0, 15)));
 
-        // Field password
         JLabel passwordLabel = new JLabel("Password");
         passwordLabel.setFont(new Font("Segoe UI", Font.ITALIC, 14));
         JPasswordField passwordField = new JPasswordField();
@@ -60,7 +56,6 @@ public class Login extends JFrame {
         container.add(passwordField);
         container.add(Box.createRigidArea(new Dimension(0, 20)));
 
-        // Tombol login
         JButton loginButton = new JButton("Login");
         loginButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
         loginButton.setBackground(new Color(65, 105, 225));
@@ -71,10 +66,8 @@ public class Login extends JFrame {
         loginButton.setPreferredSize(new Dimension(100, 30));
         container.add(loginButton);
 
-        // Tambahkan container ke background (pusat)
         background.add(container);
 
-        // Aksi login
         loginButton.addActionListener(e -> {
             String username = usernameField.getText();
             String password = String.valueOf(passwordField.getPassword());
@@ -93,11 +86,13 @@ public class Login extends JFrame {
                 if (rs.next()) {
                     String passwordHashDB = rs.getString("password_hash");
                     long accountNumber = rs.getLong("account_number");
+                    int customerId = rs.getInt("id");
 
                     if (password.equals(passwordHashDB)) {
                         JOptionPane.showMessageDialog(this, "Login " + username + " berhasil (" + accountNumber + ")");
                         dispose();
-                        new Dashboard().setVisible(true);
+                        new AppTransaksi(accountNumber, username, customerId).setVisible(true);
+//                        new Dashboard().setVisible(true);
                     } else {
                         JOptionPane.showMessageDialog(this, "Password salah!");
                         usernameField.setText("");

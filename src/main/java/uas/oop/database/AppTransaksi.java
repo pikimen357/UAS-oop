@@ -11,7 +11,6 @@ import java.sql.SQLException;
 public class AppTransaksi extends JFrame {
 
     private JPanel transactionPanel;
-    private JPanel headerPanel;
     private JLabel welcomeLabel;
     private JLabel accountNumberLabel;
     private JLabel currentBalanceLabel;
@@ -29,137 +28,312 @@ public class AppTransaksi extends JFrame {
         this.loggedInUsername = username;
         this.loggedInCustomerId = customerId;
 
-        setTitle("Dashboard Mobile Banking");
-        setSize(400, 700);
+        setTitle("Transaksi Mobile Banking");
+        setSize(450, 850);
         setLocationRelativeTo(null);
         setResizable(false);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        // 🔵 Panel utama (pakai BorderLayout supaya header di atas)
-        JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.setBackground(new Color(180, 200, 245));
-
-        // 🔵 Header Panel
-        JPanel headerPanel = new JPanel(new BorderLayout());
-        headerPanel.setBackground(new Color(65, 105, 225));
-        headerPanel.setPreferredSize(new Dimension(getWidth(), 50));
-
-        JLabel headerLabel = new JLabel("  Bank Plecit"); // spasi di awal untuk margin kiri
-        headerLabel.setForeground(Color.WHITE);
-        headerLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
-
-        headerPanel.add(headerLabel, BorderLayout.WEST);
-
-        // 🔵 Background panel untuk isi transaksi
-        JPanel background = new JPanel(new GridBagLayout());
-        background.setOpaque(false); // biar header kelihatan
-        background.setBackground(new Color(180, 200, 245));
-
-        // Container panel (card) dengan RoundedPanel
-        RoundedPanel card = new RoundedPanel(20);
-        card.setPreferredSize(new Dimension(320, 400));
-        card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
-        card.setBackground(Color.WHITE);
-        card.setBorder(BorderFactory.createEmptyBorder(30, 20, 30, 20));
-
-        // Buat panel transaksi (isinya form & tombol)
-        createTransactionPanel();
-
-        // Tambahkan transactionPanel ke card (dengan padding & layout card)
-        card.add(transactionPanel);
-
-        // Tambahkan card ke background
-        background.add(card);
-
-        // 🔵 Tambahkan header dan background panel ke mainPanel
-        mainPanel.add(headerPanel, BorderLayout.NORTH);
-        mainPanel.add(background, BorderLayout.CENTER);
-
-        add(mainPanel);
-
-        // Tampilkan saldo awal
+        buildGUI();
         updateBalanceDisplay();
     }
 
+    private void buildGUI() {
+        // Panel utama
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBackground(new Color(240, 245, 255));
 
-    public void header(){
-        headerPanel = new JPanel();
-        headerPanel.setBackground(new Color(180, 200, 245));
-        headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
-        headerPanel.setOpaque(false);
+        // Header Panel
+        JPanel headerPanel = createHeaderPanel();
 
-        welcomeLabel = new JLabel("Selamat datang, " + loggedInUsername + "!");
-        welcomeLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
-        welcomeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        headerPanel.add(welcomeLabel);
-        headerPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        // Content Panel
+        JPanel contentPanel = createContentPanel();
+
+        // Footer Panel
+        JPanel footerPanel = createFooterPanel();
+
+        // Gabungkan semua
+        mainPanel.add(headerPanel, BorderLayout.NORTH);
+        mainPanel.add(contentPanel, BorderLayout.CENTER);
+        mainPanel.add(footerPanel, BorderLayout.SOUTH);
+
+        add(mainPanel);
     }
 
-    private void createTransactionPanel() {
-        transactionPanel = new JPanel();
-        transactionPanel.setLayout(new BoxLayout(transactionPanel, BoxLayout.Y_AXIS));
-        transactionPanel.setOpaque(false); // Supaya transparan di dalam RoundedPanel
+    private JPanel createHeaderPanel() {
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setBackground(new Color(65, 105, 225));
+        headerPanel.setPreferredSize(new Dimension(getWidth(), 70));
+        headerPanel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
 
-        // Welcome Label
+        // Logo/Title sebagai tombol
+        JButton headerLabel = new JButton("Bank Plecit");
+        headerLabel.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        headerLabel.setForeground(Color.WHITE);
+        headerLabel.setContentAreaFilled(false);
+        headerLabel.setBorderPainted(false);
+        headerLabel.setFocusPainted(false);
+        headerLabel.setOpaque(false);
+        headerLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        headerLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                headerLabel.setFont(new Font("Segoe UI", Font.BOLD, 23));
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                headerLabel.setFont(new Font("Segoe UI", Font.BOLD, 22));
+            }
+        });
+
+        headerLabel.addActionListener(e -> {
+            dispose();
+            new Dashboard(loggedInAccountNumber, loggedInUsername, loggedInCustomerId).setVisible(true);
+        });
+
+        // Logout Button
+        JButton logoutButton = new JButton("Logout");
+        logoutButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        logoutButton.setForeground(Color.WHITE);
+        logoutButton.setContentAreaFilled(false);
+        logoutButton.setBorderPainted(false);
+        logoutButton.setFocusPainted(false);
+        logoutButton.setOpaque(false);
+        logoutButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        logoutButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                logoutButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                logoutButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+            }
+        });
+
+        logoutButton.addActionListener(e -> {
+            dispose();
+            new Login().setVisible(true);
+        });
+
+        headerPanel.add(headerLabel, BorderLayout.WEST);
+        headerPanel.add(logoutButton, BorderLayout.EAST);
+
+        return headerPanel;
+    }
+
+    private JPanel createContentPanel() {
+        JPanel contentPanel = new JPanel(new GridBagLayout());
+        contentPanel.setBackground(new Color(240, 245, 255));
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(30, 0, 30, 0));
+
+        // Main transaction card
+        JPanel transactionCard = createTransactionCard();
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.insets = new Insets(10, 0, 10, 0);
+
+        contentPanel.add(transactionCard, gbc);
+
+        return contentPanel;
+    }
+
+    private JPanel createTransactionCard() {
+        RoundedPanel card = new RoundedPanel(25) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g;
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+                // Shadow effect
+                g2d.setColor(new Color(0, 0, 0, 20));
+                g2d.fillRoundRect(3, 3, getWidth(), getHeight(), 25, 25);
+
+                // Card background
+                g2d.setColor(getBackground());
+                g2d.fillRoundRect(0, 0, getWidth(), getHeight(), 25, 25);
+            }
+        };
+
+        card.setPreferredSize(new Dimension(380, 500));
+        card.setBackground(Color.WHITE);
+        card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
+        card.setBorder(BorderFactory.createEmptyBorder(40, 30, 40, 30));
+
+        createTransactionPanel(card);
+
+        return card;
+    }
+
+    private void createTransactionPanel(JPanel parentCard) {
+        // Title
+        JLabel titleLabel = new JLabel("Transaksi Banking");
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 24));
+        titleLabel.setForeground(new Color(65, 105, 225));
+        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        parentCard.add(titleLabel);
+        parentCard.add(Box.createRigidArea(new Dimension(0, 20)));
+
+        // Welcome message
         welcomeLabel = new JLabel("Selamat datang, " + loggedInUsername + "!");
         welcomeLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        welcomeLabel.setForeground(new Color(60, 60, 60));
         welcomeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        transactionPanel.add(welcomeLabel);
-        transactionPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        parentCard.add(welcomeLabel);
+        parentCard.add(Box.createRigidArea(new Dimension(0, 10)));
 
-        // Account Number
+        // Account info panel
+        JPanel accountInfoPanel = createAccountInfoPanel();
+        parentCard.add(accountInfoPanel);
+        parentCard.add(Box.createRigidArea(new Dimension(0, 25)));
+
+        // Amount input panel
+        JPanel amountPanel = createAmountInputPanel();
+        parentCard.add(amountPanel);
+        parentCard.add(Box.createRigidArea(new Dimension(0, 25)));
+
+        // Buttons panel
+        JPanel buttonPanel = createButtonPanel();
+        parentCard.add(buttonPanel);
+        parentCard.add(Box.createRigidArea(new Dimension(0, 20)));
+
+        // Transaction message
+        transactionMessageLabel = new JLabel(" ");
+        transactionMessageLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        transactionMessageLabel.setForeground(new Color(65, 105, 225));
+        transactionMessageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        parentCard.add(transactionMessageLabel);
+    }
+
+    private JPanel createAccountInfoPanel() {
+        JPanel infoPanel = new JPanel();
+        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
+        infoPanel.setBackground(new Color(248, 250, 255));
+        infoPanel.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(200, 220, 255), 1),
+                BorderFactory.createEmptyBorder(15, 15, 15, 15)
+        ));
+        infoPanel.setOpaque(true);
+
+        // Account number
         accountNumberLabel = new JLabel("Nomor Rekening: " + loggedInAccountNumber);
+        accountNumberLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        accountNumberLabel.setForeground(new Color(80, 80, 80));
         accountNumberLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        transactionPanel.add(accountNumberLabel);
-        transactionPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        infoPanel.add(accountNumberLabel);
+        infoPanel.add(Box.createRigidArea(new Dimension(0, 8)));
 
-        // Current Balance
+        // Current balance
         currentBalanceLabel = new JLabel("Saldo Saat Ini: Rp 0");
-        currentBalanceLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        currentBalanceLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        currentBalanceLabel.setForeground(new Color(65, 105, 225));
         currentBalanceLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        transactionPanel.add(currentBalanceLabel);
-        transactionPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+        infoPanel.add(currentBalanceLabel);
 
-        // Amount Input
-        JPanel amountPanel = new JPanel(new BorderLayout());
+        return infoPanel;
+    }
+
+    private JPanel createAmountInputPanel() {
+        JPanel amountPanel = new JPanel(new BorderLayout(10, 0));
         amountPanel.setOpaque(false);
-        JLabel amountLabel = new JLabel("Jumlah: ");
+        amountPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+
+        JLabel amountLabel = new JLabel("Jumlah Transaksi:");
+        amountLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        amountLabel.setForeground(new Color(60, 60, 60));
+
         amountField = new JTextField();
+        amountField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        amountField.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(200, 200, 200), 1),
+                BorderFactory.createEmptyBorder(8, 12, 8, 12)
+        ));
+        amountField.setPreferredSize(new Dimension(200, 35));
+
         amountPanel.add(amountLabel, BorderLayout.WEST);
         amountPanel.add(amountField, BorderLayout.CENTER);
-        transactionPanel.add(amountPanel);
-        transactionPanel.add(Box.createRigidArea(new Dimension(0, 15)));
 
-        // Buttons Panel
-        JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 10, 0));
+        return amountPanel;
+    }
+
+    private JPanel createButtonPanel() {
+        JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 20, 0));
         buttonPanel.setOpaque(false);
-        depositButton = new JButton("Setor Tunai");
-        withdrawalButton = new JButton("Tarik Tunai");
+        buttonPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 45));
+
+        // Deposit button
+        depositButton = createStyledButton("💰 Setor Tunai", new Color(46, 204, 113));
+        depositButton.addActionListener(e -> performTransaction("deposit"));
+
+        // Withdrawal button
+        withdrawalButton = createStyledButton("💳 Tarik Tunai", new Color(231, 76, 60));
+        withdrawalButton.addActionListener(e -> performTransaction("withdrawal"));
+
         buttonPanel.add(depositButton);
         buttonPanel.add(withdrawalButton);
-        transactionPanel.add(buttonPanel);
-        transactionPanel.add(Box.createRigidArea(new Dimension(0, 15)));
 
-        // Transaction Message
-        transactionMessageLabel = new JLabel("");
-        transactionMessageLabel.setForeground(Color.BLUE);
-        transactionMessageLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        transactionPanel.add(transactionMessageLabel);
+        return buttonPanel;
+    }
 
-        // Button Action Listeners
-        depositButton.addActionListener(new ActionListener() {
+    private JButton createStyledButton(String text, Color backgroundColor) {
+        JButton button = new JButton(text);
+        button.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        button.setForeground(Color.WHITE);
+        button.setBackground(backgroundColor);
+        button.setBorder(BorderFactory.createEmptyBorder(12, 20, 12, 20));
+        button.setFocusPainted(false);
+        button.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                performTransaction("deposit");
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                button.setBackground(backgroundColor.darker());
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                button.setBackground(backgroundColor);
             }
         });
 
-        withdrawalButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                performTransaction("withdrawal");
-            }
-        });
+        return button;
+    }
+
+    private JPanel createFooterPanel() {
+        JPanel footerPanel = new JPanel(new BorderLayout());
+        footerPanel.setBackground(new Color(65, 105, 225));
+        footerPanel.setPreferredSize(new Dimension(getWidth(), 60));
+        footerPanel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+
+        // Label kiri
+        JLabel transactionLabel = new JLabel("Transaksi Aman & Terpercaya");
+        transactionLabel.setForeground(Color.WHITE);
+        transactionLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+
+        // Label tengah
+        JLabel securityLabel = new JLabel("🔒 SSL Encrypted");
+        securityLabel.setForeground(Color.WHITE);
+        securityLabel.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        securityLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+        // Label kanan
+        JLabel supportLabel = new JLabel("24/7 Customer Support");
+        supportLabel.setForeground(Color.WHITE);
+        supportLabel.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        supportLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+
+        footerPanel.add(transactionLabel, BorderLayout.WEST);
+        footerPanel.add(securityLabel, BorderLayout.CENTER);
+        footerPanel.add(supportLabel, BorderLayout.EAST);
+
+        return footerPanel;
     }
 
     private void updateBalanceDisplay() {
@@ -176,17 +350,17 @@ public class AppTransaksi extends JFrame {
         }
     }
 
-    private boolean performTransaction(String type) {
+    private void performTransaction(String type) {
         double amount;
         try {
             amount = Double.parseDouble(amountField.getText());
             if (amount <= 0) {
-                transactionMessageLabel.setText("Jumlah harus lebih besar dari nol.");
-                return false;
+                showMessage("Jumlah harus lebih besar dari nol.", new Color(231, 76, 60));
+                return;
             }
         } catch (NumberFormatException ex) {
-            transactionMessageLabel.setText("Masukkan jumlah yang valid.");
-            return false;
+            showMessage("Masukkan jumlah yang valid.", new Color(231, 76, 60));
+            return;
         }
 
         try (Connection connection = ConnectionUtil.getDataSource().getConnection()) {
@@ -194,33 +368,55 @@ public class AppTransaksi extends JFrame {
             SavingsAccount account = SavingsAccount.loadFromDB(loggedInAccountNumber, connection);
 
             if (account == null) {
-                transactionMessageLabel.setText("Akun tidak ditemukan.");
+                showMessage("Akun tidak ditemukan.", new Color(231, 76, 60));
                 connection.rollback();
-                return false;
+                return;
             }
 
-            Transaction t1 = new Transaction(loggedInAccountNumber, type, amount, type.equals("deposit") ? "Setoran tunai" : "Tarik tunai");
+            Transaction t1 = new Transaction(loggedInAccountNumber, type, amount,
+                    type.equals("deposit") ? "Setoran tunai" : "Tarik tunai");
             boolean success = t1.process(account, connection);
 
             if (success) {
                 connection.commit();
-                transactionMessageLabel.setText(String.format("%s sebesar Rp %,.2f berhasil.",
-                        type.equals("deposit") ? "Deposit" : "Tarik tunai", amount));
+                showMessage(String.format("✅ %s sebesar Rp %,.2f berhasil!",
+                                type.equals("deposit") ? "Setoran" : "Penarikan", amount),
+                        new Color(46, 204, 113));
+
                 updateBalanceDisplay();
                 amountField.setText("");
-                return true;
+
+                // Kembali ke dashboard setelah 2 detik
+                Timer timer = new Timer(2000, e -> {
+                    dispose();
+                    new Dashboard(loggedInAccountNumber, loggedInUsername, loggedInCustomerId).setVisible(true);
+                });
+                timer.setRepeats(false);
+                timer.start();
+
             } else {
                 connection.rollback();
-                transactionMessageLabel.setText(String.format("%s gagal. Saldo tidak mencukupi atau kesalahan lain.",
-                        type.equals("deposit") ? "Deposit" : "Tarik tunai"));
-                return false;
+                showMessage(String.format("❌ %s gagal. Saldo tidak mencukupi.",
+                                type.equals("deposit") ? "Setoran" : "Penarikan"),
+                        new Color(231, 76, 60));
+
+                Timer timer = new Timer(2000, e -> {
+                    dispose();
+                    new Dashboard(loggedInAccountNumber, loggedInUsername, loggedInCustomerId).setVisible(true);
+                });
+                timer.setRepeats(false);
+                timer.start();
             }
 
         } catch (SQLException e) {
-            transactionMessageLabel.setText("Kesalahan transaksi: " + e.getMessage());
+            showMessage("Kesalahan transaksi: " + e.getMessage(), new Color(231, 76, 60));
             e.printStackTrace();
-            return false;
         }
+    }
+
+    private void showMessage(String message, Color color) {
+        transactionMessageLabel.setText(message);
+        transactionMessageLabel.setForeground(color);
     }
 
     public static void main(String[] args) {

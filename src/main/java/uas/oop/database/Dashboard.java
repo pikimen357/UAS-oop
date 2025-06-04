@@ -2,100 +2,309 @@ package uas.oop.database;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public class Dashboard extends JFrame {
-
 
     // 🔵 Deklarasi variabel di dalam class, bukan di dalam constructor
     private long loggedInAccountNumber;
     private String loggedInUsername;
     private int loggedInCustomerId;
+    private JLabel currentBalanceLabel;
+
     // 🔵 Constructor tambahan untuk inisialisasi data
     public Dashboard(long accountNumber, String username, int customerId) {
-        this(); // Panggil constructor default
         this.loggedInAccountNumber = accountNumber;
         this.loggedInUsername = username;
         this.loggedInCustomerId = customerId;
+
+        buildGUI();
     }
 
-    public Dashboard() {
-
-
+    public void buildGUI(){
         setTitle("Dashboard Mobile Banking");
-        setSize(400, 700);
+        setSize(450, 850);
         setLocationRelativeTo(null);
         setResizable(false);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        // Panel utama (pakai BorderLayout supaya header di atas)
+        // Panel utama
         JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.setBackground(new Color(180, 200, 245));
+        mainPanel.setBackground(new Color(240, 245, 255));
 
         // Header Panel
-        JPanel headerPanel = new JPanel(new BorderLayout());
-        headerPanel.setBackground(new Color(65, 105, 225));
-        headerPanel.setPreferredSize(new Dimension(getWidth(), 50));
+        JPanel headerPanel = createHeaderPanel();
 
-        JLabel headerLabel = new JLabel("  Bank Plecit"); // spasi margin kiri
-        headerLabel.setForeground(Color.WHITE);
-        headerLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
-        headerPanel.add(headerLabel, BorderLayout.WEST);
+        // Content Panel (tengah)
+        JPanel contentPanel = createContentPanel();
 
-        JLabel headerLabel2 = new JLabel("Logout  "); // spasi margin kiri
-        headerLabel2.setForeground(Color.WHITE);
-        headerLabel2.setFont(new Font("Segoe UI", Font.PLAIN, 12));
-        headerPanel.add(headerLabel2, BorderLayout.EAST);
+        // Footer Panel
+        JPanel footerPanel = createFooterPanel();
 
-        // Panel background untuk menu (pakai GridLayout agar rapi)
-        JPanel menuPanel = new JPanel(new GridLayout(3, 2, 30, 20)); // 3 baris, 2 kolom
-        menuPanel.setOpaque(false);
-        menuPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20)); // padding
-
-        // Contoh card menu
-        menuPanel.add(createMenuCard("Akun", "src/main/resources/assets/admin.png"));
-        menuPanel.add(createMenuCard("Info", "src/main/resources/assets/img.png"));
-        menuPanel.add(createMenuCard("Tarik Tunai", "src/main/resources/assets/transfer.png"));
-        menuPanel.add(createMenuCard("Setor Tunai", "src/main/resources/assets/payment.png"));
-        menuPanel.add(createMenuCard("Transfer", "src/main/resources/assets/trnsfr.png"));
-        menuPanel.add(createMenuCard("Pulsa & Data", "src/main/resources/assets/chart.png"));
-
-
-        // Tambahkan header dan menuPanel ke mainPanel
+        // Gabungkan semua
         mainPanel.add(headerPanel, BorderLayout.NORTH);
-        mainPanel.add(menuPanel, BorderLayout.CENTER);
+        mainPanel.add(contentPanel, BorderLayout.CENTER);
+        mainPanel.add(footerPanel, BorderLayout.SOUTH);
 
         add(mainPanel);
+    }
+
+    private JPanel createHeaderPanel() {
+        JPanel headerPanel = new JPanel(new BorderLayout());
+        headerPanel.setBackground(new Color(65, 105, 225));
+        headerPanel.setPreferredSize(new Dimension(getWidth(), 70));
+        headerPanel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+
+        JLabel headerLabel = new JLabel("Bank Plecit");
+        headerLabel.setForeground(Color.WHITE);
+        headerLabel.setFont(new Font("Segoe UI", Font.BOLD, 22));
+
+        JButton logoutButton = new JButton("Logout");
+        logoutButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        logoutButton.setForeground(Color.WHITE);
+        logoutButton.setContentAreaFilled(false);
+        logoutButton.setBorderPainted(false);
+        logoutButton.setFocusPainted(false);
+        logoutButton.setOpaque(false);
+        logoutButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        logoutButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                logoutButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                logoutButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+            }
+        });
+
+        logoutButton.addActionListener(e -> {
+            dispose();
+            new Login().setVisible(true);
+        });
+
+        headerPanel.add(headerLabel, BorderLayout.WEST);
+        headerPanel.add(logoutButton, BorderLayout.EAST);
+
+        return headerPanel;
+    }
+
+    private JPanel createContentPanel() {
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+        contentPanel.setBackground(new Color(240, 245, 255));
+        contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
+
+        // Info Panel
+        JPanel infoPanel = createInfoPanel();
+        JPanel wrapperInfoPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        wrapperInfoPanel.setOpaque(false);
+        wrapperInfoPanel.add(infoPanel);
+
+        // Menu Panel
+        JPanel menuPanel = createMenuPanel();
+
+        contentPanel.add(wrapperInfoPanel);
+        contentPanel.add(Box.createRigidArea(new Dimension(0, 25)));
+        contentPanel.add(menuPanel);
+
+        return contentPanel;
+    }
+
+    private JPanel createInfoPanel() {
+        JPanel infoPanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g;
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                g2d.setColor(getBackground());
+                g2d.fillRoundRect(0, 0, getWidth(), getHeight(), 25, 25);
+
+                // Tambah shadow effect
+                g2d.setColor(new Color(0, 0, 0, 20));
+                g2d.fillRoundRect(2, 2, getWidth(), getHeight(), 25, 25);
+                g2d.setColor(getBackground());
+                g2d.fillRoundRect(0, 0, getWidth(), getHeight(), 25, 25);
+            }
+        };
+
+        infoPanel.setBackground(Color.WHITE);
+        infoPanel.setPreferredSize(new Dimension(380, 160));
+        infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
+        infoPanel.setOpaque(false);
+
+        // Icon
+        ImageIcon icon = new ImageIcon("src/main/resources/assets/admin.png");
+        Image img = icon.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
+        JLabel iconLabel = new JLabel(new ImageIcon(img));
+        iconLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // Nama
+        JLabel infoLabel = new JLabel();
+        infoLabel.setForeground(new Color(45, 45, 45));
+        infoLabel.setFont(new Font("Segoe UI", Font.BOLD, 22));
+        infoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // Saldo
+        currentBalanceLabel = new JLabel();
+        currentBalanceLabel.setForeground(new Color(65, 105, 225));
+        currentBalanceLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        currentBalanceLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // Tambahkan komponen
+        infoPanel.add(Box.createVerticalStrut(15));
+        infoPanel.add(iconLabel);
+        infoPanel.add(Box.createVerticalStrut(12));
+        infoPanel.add(infoLabel);
+        infoPanel.add(Box.createVerticalStrut(8));
+        infoPanel.add(currentBalanceLabel);
+        infoPanel.add(Box.createVerticalStrut(15));
+
+        // Atur teks sesuai status login
+        if (loggedInAccountNumber != 0) {
+            infoLabel.setText(loggedInUsername);
+
+            try (Connection connection = ConnectionUtil.getDataSource().getConnection()) {
+                SavingsAccount account = SavingsAccount.loadFromDB(loggedInAccountNumber, connection);
+                if (account != null) {
+                    currentBalanceLabel.setText(String.format("Saldo: Rp %,.2f", account.getBalance()));
+                } else {
+                    currentBalanceLabel.setText("Saldo: N/A");
+                }
+            } catch (SQLException e) {
+                currentBalanceLabel.setText("Gagal memuat saldo");
+                e.printStackTrace();
+            }
+        } else {
+            infoLabel.setText("Login Terlebih Dahulu!");
+            currentBalanceLabel.setText("Silakan login untuk melihat saldo");
+        }
+
+        return infoPanel;
+    }
+
+    private JPanel createMenuPanel() {
+        JPanel menuPanel = new JPanel(new GridLayout(3, 2, 25, 25));
+        menuPanel.setOpaque(false);
+        menuPanel.setBorder(BorderFactory.createEmptyBorder(0, 25, 0, 25));
+
+        menuPanel.add(createMenuCard("Akun", "src/main/resources/assets/admin.png", null));
+        menuPanel.add(createMenuCard("Info", "src/main/resources/assets/img.png", null));
+        menuPanel.add(createMenuCard("Tarik Tunai", "src/main/resources/assets/transfer.png", () -> {
+            new AppTransaksi(loggedInAccountNumber, loggedInUsername, loggedInCustomerId).setVisible(true);
+        }));
+        menuPanel.add(createMenuCard("Setor Tunai", "src/main/resources/assets/payment.png", () -> {
+            new AppTransaksi(loggedInAccountNumber, loggedInUsername, loggedInCustomerId).setVisible(true);
+        }));
+        menuPanel.add(createMenuCard("Transfer", "src/main/resources/assets/trnsfr.png", null));
+        menuPanel.add(createMenuCard("Pulsa & Data", "src/main/resources/assets/chart.png", null));
+
+        return menuPanel;
+    }
+
+    private JPanel createFooterPanel() {
+        JPanel footerPanel = new JPanel(new BorderLayout());
+        footerPanel.setBackground(new Color(65, 105, 225));
+        footerPanel.setPreferredSize(new Dimension(getWidth(), 60));
+        footerPanel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+
+        // Label kiri - informasi aplikasi
+        JLabel appInfoLabel = new JLabel("Bank Plecit Mobile v1.0");
+        appInfoLabel.setForeground(Color.WHITE);
+        appInfoLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+
+        // Label tengah - status koneksi atau info tambahan
+        JLabel statusLabel = new JLabel("Secure Connection");
+        statusLabel.setForeground(Color.WHITE);
+        statusLabel.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+        // Label kanan - waktu atau info lainnya
+        JLabel timeLabel = new JLabel("© 2024 Bank Plecit");
+        timeLabel.setForeground(Color.WHITE);
+        timeLabel.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        timeLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+
+        footerPanel.add(appInfoLabel, BorderLayout.WEST);
+        footerPanel.add(statusLabel, BorderLayout.CENTER);
+        footerPanel.add(timeLabel, BorderLayout.EAST);
+
+        return footerPanel;
     }
 
     /**
      * Membuat satu card menu bergaya RoundedPanel dengan gambar icon dan label
      */
-    private RoundedPanel createMenuCard(String text, String imagePath) {
-        RoundedPanel card = new RoundedPanel(20);
-        card.setPreferredSize(new Dimension(90, 75));
+    private RoundedPanel createMenuCard(String text, String imagePath, Runnable onClick) {
+        RoundedPanel card = new RoundedPanel(20) {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g;
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+                // Shadow effect
+                g2d.setColor(new Color(0, 0, 0, 15));
+                g2d.fillRoundRect(2, 2, getWidth(), getHeight(), 20, 20);
+
+                // Card background
+                g2d.setColor(getBackground());
+                g2d.fillRoundRect(0, 0, getWidth(), getHeight(), 20, 20);
+            }
+        };
+
+        card.setPreferredSize(new Dimension(160, 120));
         card.setLayout(new BorderLayout());
         card.setBackground(Color.WHITE);
-        card.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        card.setBorder(BorderFactory.createEmptyBorder(15, 10, 15, 10));
 
-        // 🔵 Gunakan gambar sebagai icon
+        // Icon
         ImageIcon icon = new ImageIcon(imagePath);
-
-        // 🔵 Ukuran icon (resize agar tidak terlalu besar)
-        Image img = icon.getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+        Image img = icon.getImage().getScaledInstance(45, 45, Image.SCALE_SMOOTH);
         JLabel iconLabel = new JLabel(new ImageIcon(img), SwingConstants.CENTER);
 
-        // 🔵 Text label
+        // Text label
         JLabel textLabel = new JLabel(text, SwingConstants.CENTER);
-        textLabel.setFont(new Font("Segoe UI", Font.BOLD, 17));
+        textLabel.setFont(new Font("Segoe UI", Font.BOLD, 16));
+        textLabel.setForeground(new Color(60, 60, 60));
 
         card.add(iconLabel, BorderLayout.CENTER);
         card.add(textLabel, BorderLayout.SOUTH);
 
+        // Tambah hover effect
+        card.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        card.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent e) {
+                card.setBackground(new Color(248, 250, 255));
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent e) {
+                card.setBackground(Color.WHITE);
+            }
+
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                if (onClick != null) {
+                    onClick.run();
+                }
+            }
+        });
+
         return card;
     }
 
-
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new Dashboard().setVisible(true));
+        SwingUtilities.invokeLater(() -> {
+            long accountNumber = 0;
+            String username = "Login Terlebih Dahulu!";
+            int customerId = 1;
+            new Dashboard(accountNumber, username, customerId).setVisible(true);
+        });
     }
 }

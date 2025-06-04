@@ -22,11 +22,74 @@ public class Login extends JFrame {
         headerPanel.setBackground(new Color(65, 105, 225));
         headerPanel.setPreferredSize(new Dimension(getWidth(), 70));
 
-        JLabel headerLabel = new JLabel("  Bank Plecit"); // spasi untuk margin kiri
-        headerLabel.setForeground(Color.BLACK);
+        //TOMBOL Menu
+        JButton headerLabel = new JButton("  Bank Plecit");
         headerLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        headerLabel.setForeground(Color.BLACK); // warna teks link
+        headerLabel.setContentAreaFilled(false); // hilangkan background
+        headerLabel.setBorderPainted(false);     // hilangkan border
+        headerLabel.setFocusPainted(false);      // hilangkan outline focus
+        headerLabel.setOpaque(false);            // hilangkan opasitas background
+        headerLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
+        // Ubah kursor hover seperti link
+        headerLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                headerLabel.setForeground(Color.BLACK); // Warna hover link
+                headerLabel.setFont(new Font("Segoe UI", Font.BOLD, 21));
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                headerLabel.setForeground(Color.BLACK); // Kembali ke warna semula
+                headerLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
+            }
+        });
+
+        // Tambahkan ke headerPanel
         headerPanel.add(headerLabel, BorderLayout.WEST);
+
+        // Aksi klik → buka halaman Dashboard
+        headerLabel.addActionListener(e -> {
+            dispose(); // tutup frame Register
+            new Dashboard(0, null, 0).setVisible(true);
+        });
+
+        //TOMBOL REGISTER
+        JButton regButton = new JButton("Register");
+        regButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
+        regButton.setForeground(Color.WHITE); // warna teks link
+        regButton.setContentAreaFilled(false); // hilangkan background
+        regButton.setBorderPainted(false);     // hilangkan border
+        regButton.setFocusPainted(false);      // hilangkan outline focus
+        regButton.setOpaque(false);            // hilangkan opasitas background
+        regButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+
+        // Ubah kursor hover seperti link
+        regButton.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                regButton.setForeground(Color.WHITE); // Warna hover link
+                regButton.setFont(new Font("Tahoma", Font.BOLD, 14));
+            }
+
+            @Override
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                regButton.setForeground(Color.WHITE); // Kembali ke warna semula
+                regButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
+            }
+        });
+
+        // Tambahkan ke headerPanel
+        headerPanel.add(regButton, BorderLayout.EAST);
+
+        // Aksi klik → buka halaman Register
+        regButton.addActionListener(e -> {
+            dispose(); // tutup frame Register
+            new Register().setVisible(true);
+        });
+
 
         // 🔵 Panel Login di tengah
         JPanel background = new JPanel(new GridBagLayout());

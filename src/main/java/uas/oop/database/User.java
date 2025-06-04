@@ -23,6 +23,10 @@ public class User {
 
     public int getIdUser() { return idUser; }
 
+    public void setIdUser(int idUser) {
+        this.idUser = idUser;
+    }
+
     public String getEmail() { return email; }
     public void setEmail(String email) {  this.email = email; }
 
@@ -38,42 +42,6 @@ public class User {
 
     public void showInfo() {
         System.out.println("User: " + username + " (Role: " + role + ")");
-    }
-
-    public int insertToUser() throws SQLException {
-        Connection connection = ConnectionUtil.getDataSource().getConnection();
-
-        String sql = """
-        INSERT INTO users (username, password_hash, role, email)
-        VALUES (?, ?, ?, ?)
-                    """;
-
-        var preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-
-        preparedStatement.setString(1, username);
-        preparedStatement.setString(2, passwordHash);
-        preparedStatement.setString(3, role);
-        preparedStatement.setString(4, email);
-
-        int affectedRows = preparedStatement.executeUpdate();
-        if (affectedRows == 0) {
-            throw new SQLException("Inserting user failed, no rows affected.");
-        }
-
-        try (var generatedKeys = preparedStatement.getGeneratedKeys()) {
-            if (generatedKeys.next()) {
-                int generatedId = generatedKeys.getInt(1);
-                this.idUser = generatedId;  // simpan ke objek
-                System.out.println("Insert User successful, ID = " + idUser);
-            } else {
-                throw new SQLException("Inserting user failed, no ID obtained.");
-            }
-        }
-
-        preparedStatement.close();
-        connection.close();
-
-        return this.idUser;
     }
 
     // Method overload - untuk transaksi (gunakan koneksi yang sudah ada)

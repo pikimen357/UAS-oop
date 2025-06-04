@@ -18,14 +18,32 @@ public class Login extends JFrame {
         mainPanel.setBackground(new Color(180, 200, 245));
 
         // 🔵 Header Panel
+        JPanel headerPanel = createHeaderPanel();
+
+        // 🔵 Panel Login di tengah
+        JPanel contentPanel = createContentPanel();
+
+        // 🔵 Footer Panel
+        JPanel footerPanel = createFooterPanel();
+
+        // Tambahkan semua panel ke mainPanel
+        mainPanel.add(headerPanel, BorderLayout.NORTH);
+        mainPanel.add(contentPanel, BorderLayout.CENTER);
+        mainPanel.add(footerPanel, BorderLayout.SOUTH);
+
+        add(mainPanel);
+    }
+
+    private JPanel createHeaderPanel() {
         JPanel headerPanel = new JPanel(new BorderLayout());
         headerPanel.setBackground(new Color(65, 105, 225));
         headerPanel.setPreferredSize(new Dimension(getWidth(), 70));
+        headerPanel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
 
         //TOMBOL Menu
         JButton headerLabel = new JButton("  Bank Plecit");
         headerLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
-        headerLabel.setForeground(Color.BLACK); // warna teks link
+        headerLabel.setForeground(Color.WHITE); // warna teks link
         headerLabel.setContentAreaFilled(false); // hilangkan background
         headerLabel.setBorderPainted(false);     // hilangkan border
         headerLabel.setFocusPainted(false);      // hilangkan outline focus
@@ -36,13 +54,13 @@ public class Login extends JFrame {
         headerLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                headerLabel.setForeground(Color.BLACK); // Warna hover link
+                headerLabel.setForeground(Color.WHITE); // Warna hover link
                 headerLabel.setFont(new Font("Segoe UI", Font.BOLD, 21));
             }
 
             @Override
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                headerLabel.setForeground(Color.BLACK); // Kembali ke warna semula
+                headerLabel.setForeground(Color.WHITE); // Kembali ke warna semula
                 headerLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
             }
         });
@@ -90,8 +108,10 @@ public class Login extends JFrame {
             new Register().setVisible(true);
         });
 
+        return headerPanel;
+    }
 
-        // 🔵 Panel Login di tengah
+    private JPanel createContentPanel() {
         JPanel background = new JPanel(new GridBagLayout());
         background.setOpaque(false); // supaya warna header tidak tertutup
         RoundedPanel container = new RoundedPanel(20);
@@ -141,13 +161,7 @@ public class Login extends JFrame {
 
         background.add(container);
 
-        // Tambahkan header dan panel login ke mainPanel
-        mainPanel.add(headerPanel, BorderLayout.NORTH);
-        mainPanel.add(background, BorderLayout.CENTER);
-
-        add(mainPanel);
-
-        // Aksi tombol login (tetap sama)
+        // Aksi tombol login
         loginButton.addActionListener(e -> {
             String username = usernameField.getText();
             String password = String.valueOf(passwordField.getPassword());
@@ -192,8 +206,46 @@ public class Login extends JFrame {
                 ex.printStackTrace();
             }
         });
+
+        return background;
     }
 
+    public JPanel createFooterPanel() {
+        JPanel footerPanel = new JPanel(new BorderLayout());
+        footerPanel.setBackground(new Color(65, 105, 225));
+        footerPanel.setPreferredSize(new Dimension(getWidth(), 80));
+        footerPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
+
+        // Panel untuk informasi footer
+        JPanel footerInfoPanel = new JPanel(new GridLayout(3, 1, 0, 2));
+        footerInfoPanel.setOpaque(false);
+
+        // Baris pertama - Tagline
+        JLabel taglineLabel = new JLabel("🏦 Bank Plecit - Rentenir Terpercaya");
+        taglineLabel.setForeground(Color.WHITE);
+        taglineLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        taglineLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+        // Baris kedua - Keamanan
+        JLabel securityLabel = new JLabel("🔒 Aman dan Terpercaya | 24 Jam Layanan");
+        securityLabel.setForeground(new Color(220, 230, 255));
+        securityLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        securityLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+        // Baris ketiga - Copyright
+        JLabel copyrightLabel = new JLabel("© 2024 Bank Plecit. @copyright.");
+        copyrightLabel.setForeground(new Color(200, 215, 255));
+        copyrightLabel.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        copyrightLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+        footerInfoPanel.add(taglineLabel);
+        footerInfoPanel.add(securityLabel);
+        footerInfoPanel.add(copyrightLabel);
+
+        footerPanel.add(footerInfoPanel, BorderLayout.CENTER);
+
+        return footerPanel;
+    }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new Login().setVisible(true));

@@ -31,7 +31,7 @@ public class Dashboard extends JFrame {
 
         // Panel utama
         JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.setBackground(new Color(240, 245, 255));
+        mainPanel.setBackground(new Color(183, 208, 255));
 
         // Header Panel
         JPanel headerPanel = createHeaderPanel();
@@ -56,11 +56,11 @@ public class Dashboard extends JFrame {
         headerPanel.setPreferredSize(new Dimension(getWidth(), 70));
         headerPanel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
 
-        JLabel headerLabel = new JLabel("Bank Plecit");
+        JLabel headerLabel = new JLabel(" Bank Plecit");
         headerLabel.setForeground(Color.WHITE);
         headerLabel.setFont(new Font("Segoe UI", Font.BOLD, 22));
 
-        JButton logoutButton = new JButton("Logout");
+        JButton logoutButton = new JButton("logout/login ");
         logoutButton.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         logoutButton.setForeground(Color.WHITE);
         logoutButton.setContentAreaFilled(false);
@@ -95,7 +95,7 @@ public class Dashboard extends JFrame {
     private JPanel createContentPanel() {
         JPanel contentPanel = new JPanel();
         contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
-        contentPanel.setBackground(new Color(240, 245, 255));
+        contentPanel.setBackground(new Color(216, 228, 255));
         contentPanel.setBorder(BorderFactory.createEmptyBorder(20, 0, 20, 0));
 
         // Info Panel
@@ -209,29 +209,36 @@ public class Dashboard extends JFrame {
     private JPanel createFooterPanel() {
         JPanel footerPanel = new JPanel(new BorderLayout());
         footerPanel.setBackground(new Color(65, 105, 225));
-        footerPanel.setPreferredSize(new Dimension(getWidth(), 60));
-        footerPanel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+        footerPanel.setPreferredSize(new Dimension(getWidth(), 80));
+        footerPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
 
-        // Label kiri - informasi aplikasi
-        JLabel appInfoLabel = new JLabel("Bank Plecit Mobile v1.0");
-        appInfoLabel.setForeground(Color.WHITE);
-        appInfoLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        // Panel untuk informasi footer
+        JPanel footerInfoPanel = new JPanel(new GridLayout(3, 1, 0, 2));
+        footerInfoPanel.setOpaque(false);
 
-        // Label tengah - status koneksi atau info tambahan
-        JLabel statusLabel = new JLabel("Secure Connection");
-        statusLabel.setForeground(Color.WHITE);
-        statusLabel.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-        statusLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        // Baris pertama - Tagline
+        JLabel taglineLabel = new JLabel("🏦 Bank Plecit - Rentenir Terpercaya");
+        taglineLabel.setForeground(Color.WHITE);
+        taglineLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        taglineLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        // Label kanan - waktu atau info lainnya
-        JLabel timeLabel = new JLabel("© 2024 Bank Plecit");
-        timeLabel.setForeground(Color.WHITE);
-        timeLabel.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-        timeLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        // Baris kedua - Keamanan
+        JLabel securityLabel = new JLabel("🔒 Aman dan Terpercaya | 24 Jam Layanan");
+        securityLabel.setForeground(new Color(220, 230, 255));
+        securityLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        securityLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        footerPanel.add(appInfoLabel, BorderLayout.WEST);
-        footerPanel.add(statusLabel, BorderLayout.CENTER);
-        footerPanel.add(timeLabel, BorderLayout.EAST);
+        // Baris ketiga - Copyright
+        JLabel copyrightLabel = new JLabel("© 2024 Bank Plecit. @copyright.");
+        copyrightLabel.setForeground(new Color(200, 215, 255));
+        copyrightLabel.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        copyrightLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+        footerInfoPanel.add(taglineLabel);
+        footerInfoPanel.add(securityLabel);
+        footerInfoPanel.add(copyrightLabel);
+
+        footerPanel.add(footerInfoPanel, BorderLayout.CENTER);
 
         return footerPanel;
     }

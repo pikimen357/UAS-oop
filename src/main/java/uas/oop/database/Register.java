@@ -32,7 +32,7 @@ public class Register extends JFrame {
         //TOMBOL Menu
         JButton headerLabel = new JButton("  Bank Plecit");
         headerLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
-        headerLabel.setForeground(Color.BLACK); // warna teks link
+        headerLabel.setForeground(Color.WHITE); // warna teks link
         headerLabel.setContentAreaFilled(false); // hilangkan background
         headerLabel.setBorderPainted(false);     // hilangkan border
         headerLabel.setFocusPainted(false);      // hilangkan outline focus
@@ -43,13 +43,13 @@ public class Register extends JFrame {
         headerLabel.addMouseListener(new java.awt.event.MouseAdapter() {
             @Override
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                headerLabel.setForeground(Color.BLACK); // Warna hover
+                headerLabel.setForeground(Color.WHITE); // Warna hover
                 headerLabel.setFont(new Font("Segoe UI", Font.BOLD, 21));
             }
 
             @Override
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                headerLabel.setForeground(Color.BLACK); // Warna semula
+                headerLabel.setForeground(Color.WHITE); // Warna semula
                 headerLabel.setFont(new Font("Segoe UI", Font.BOLD, 20)); // Ukuran semula
             }
         });

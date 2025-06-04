@@ -162,7 +162,7 @@ public class AppTransaksi extends JFrame {
             }
         };
 
-        card.setPreferredSize(new Dimension(380, 500));
+        card.setPreferredSize(new Dimension(380, 550));
         card.setBackground(Color.WHITE);
         card.setLayout(new BoxLayout(card, BoxLayout.Y_AXIS));
         card.setBorder(BorderFactory.createEmptyBorder(40, 30, 40, 30));
@@ -187,7 +187,7 @@ public class AppTransaksi extends JFrame {
         welcomeLabel.setForeground(new Color(60, 60, 60));
         welcomeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         parentCard.add(welcomeLabel);
-        parentCard.add(Box.createRigidArea(new Dimension(0, 10)));
+        parentCard.add(Box.createRigidArea(new Dimension(0, 15)));
 
         // Account info panel
         JPanel accountInfoPanel = createAccountInfoPanel();
@@ -202,7 +202,7 @@ public class AppTransaksi extends JFrame {
         // Buttons panel
         JPanel buttonPanel = createButtonPanel();
         parentCard.add(buttonPanel);
-        parentCard.add(Box.createRigidArea(new Dimension(0, 20)));
+        parentCard.add(Box.createRigidArea(new Dimension(0, 25)));
 
         // Transaction message
         transactionMessageLabel = new JLabel(" ");
@@ -213,7 +213,7 @@ public class AppTransaksi extends JFrame {
     }
 
     private JPanel createAccountInfoPanel() {
-        JPanel infoPanel = new JPanel();
+        JPanel infoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         infoPanel.setLayout(new BoxLayout(infoPanel, BoxLayout.Y_AXIS));
         infoPanel.setBackground(new Color(248, 250, 255));
         infoPanel.setBorder(BorderFactory.createCompoundBorder(
@@ -241,13 +241,15 @@ public class AppTransaksi extends JFrame {
     }
 
     private JPanel createAmountInputPanel() {
-        JPanel amountPanel = new JPanel(new BorderLayout(10, 0));
+        JPanel amountPanel = new JPanel();
+        amountPanel.setLayout(new BoxLayout(amountPanel, BoxLayout.Y_AXIS));
         amountPanel.setOpaque(false);
-        amountPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 40));
+        amountPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 80));
 
         JLabel amountLabel = new JLabel("Jumlah Transaksi:");
         amountLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
         amountLabel.setForeground(new Color(60, 60, 60));
+        amountLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         amountField = new JTextField();
         amountField.setFont(new Font("Segoe UI", Font.PLAIN, 14));
@@ -255,10 +257,14 @@ public class AppTransaksi extends JFrame {
                 BorderFactory.createLineBorder(new Color(200, 200, 200), 1),
                 BorderFactory.createEmptyBorder(8, 12, 8, 12)
         ));
-        amountField.setPreferredSize(new Dimension(200, 35));
+        amountField.setPreferredSize(new Dimension(250, 35));
+        amountField.setMaximumSize(new Dimension(250, 35));
+        amountField.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        amountPanel.add(amountLabel, BorderLayout.WEST);
-        amountPanel.add(amountField, BorderLayout.CENTER);
+        // Tambahkan label dan field ke panel dengan spacing
+        amountPanel.add(amountLabel);
+        amountPanel.add(Box.createRigidArea(new Dimension(0, 8)));
+        amountPanel.add(amountField);
 
         return amountPanel;
     }
@@ -266,10 +272,11 @@ public class AppTransaksi extends JFrame {
     private JPanel createButtonPanel() {
         JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 20, 0));
         buttonPanel.setOpaque(false);
-        buttonPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 45));
+        buttonPanel.setMaximumSize(new Dimension(320, 45));
+        buttonPanel.setPreferredSize(new Dimension(320, 45));
 
         // Deposit button
-        depositButton = createStyledButton("💰 Setor Tunai", new Color(46, 204, 113));
+        depositButton = createStyledButton("💰 Setor Tunai", new Color(46, 67, 204));
         depositButton.addActionListener(e -> performTransaction("deposit"));
 
         // Withdrawal button
@@ -306,32 +313,39 @@ public class AppTransaksi extends JFrame {
         return button;
     }
 
-    private JPanel createFooterPanel() {
+    public JPanel createFooterPanel() {
         JPanel footerPanel = new JPanel(new BorderLayout());
         footerPanel.setBackground(new Color(65, 105, 225));
-        footerPanel.setPreferredSize(new Dimension(getWidth(), 60));
-        footerPanel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+        footerPanel.setPreferredSize(new Dimension(getWidth(), 80));
+        footerPanel.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
 
-        // Label kiri
-        JLabel transactionLabel = new JLabel("Transaksi Aman & Terpercaya");
-        transactionLabel.setForeground(Color.WHITE);
-        transactionLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
+        // Panel untuk informasi footer
+        JPanel footerInfoPanel = new JPanel(new GridLayout(3, 1, 0, 2));
+        footerInfoPanel.setOpaque(false);
 
-        // Label tengah
-        JLabel securityLabel = new JLabel("🔒 SSL Encrypted");
-        securityLabel.setForeground(Color.WHITE);
-        securityLabel.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        // Baris pertama - Tagline
+        JLabel taglineLabel = new JLabel("🏦 Bank Plecit - Rentenir Terpercaya");
+        taglineLabel.setForeground(Color.WHITE);
+        taglineLabel.setFont(new Font("Segoe UI", Font.BOLD, 14));
+        taglineLabel.setHorizontalAlignment(SwingConstants.CENTER);
+
+        // Baris kedua - Keamanan
+        JLabel securityLabel = new JLabel("🔒 Aman dan Terpercaya | 24 Jam Layanan");
+        securityLabel.setForeground(new Color(220, 230, 255));
+        securityLabel.setFont(new Font("Segoe UI", Font.PLAIN, 12));
         securityLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        // Label kanan
-        JLabel supportLabel = new JLabel("24/7 Customer Support");
-        supportLabel.setForeground(Color.WHITE);
-        supportLabel.setFont(new Font("Segoe UI", Font.PLAIN, 11));
-        supportLabel.setHorizontalAlignment(SwingConstants.RIGHT);
+        // Baris ketiga - Copyright
+        JLabel copyrightLabel = new JLabel("© 2024 Bank Plecit. @copyright.");
+        copyrightLabel.setForeground(new Color(200, 215, 255));
+        copyrightLabel.setFont(new Font("Segoe UI", Font.PLAIN, 11));
+        copyrightLabel.setHorizontalAlignment(SwingConstants.CENTER);
 
-        footerPanel.add(transactionLabel, BorderLayout.WEST);
-        footerPanel.add(securityLabel, BorderLayout.CENTER);
-        footerPanel.add(supportLabel, BorderLayout.EAST);
+        footerInfoPanel.add(taglineLabel);
+        footerInfoPanel.add(securityLabel);
+        footerInfoPanel.add(copyrightLabel);
+
+        footerPanel.add(footerInfoPanel, BorderLayout.CENTER);
 
         return footerPanel;
     }

@@ -260,7 +260,7 @@ public class Account extends JFrame {
         } else {
             infoLabel.setText("    Login Terlebih Dahulu!");
         }
-        
+
 
         return infoPanel;
     }

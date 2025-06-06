@@ -37,12 +37,12 @@ public class Transaction {
         System.out.printf("[%s] Rp %.2f - %s\n", type.toUpperCase(), amount, description);
     }
 
-    public void process(SavingsAccount account, Connection conn) throws SQLException {
+    public boolean process(SavingsAccount account, Connection conn) throws SQLException {
         if (type.equalsIgnoreCase("deposit")) {
             account.deposit(amount);
         } else if (type.equalsIgnoreCase("withdrawal")) {
             if (amount > account.getBalance()) {
-                throw new IllegalArgumentException("Saldo tidak mencukupi.");
+                return false; // saldo tidak cukup
             }
             account.withdraw(amount);
         } else {
@@ -51,6 +51,7 @@ public class Transaction {
 
         account.updateBalanceInDB(conn);
         insertToTransaction(conn);
+        return true;
     }
 }
 

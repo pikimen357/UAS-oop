@@ -214,9 +214,53 @@ public class Account extends JFrame {
             addressLabel.setText("    Alamat: " + loggedInCustomer.getAddress());
             emailLabel.setText("    Email: " + loggedInCustomer.getEmail());
             phoneLabel.setText("    Phone Number: " + loggedInCustomer.getPhone());
+            // Ganti kode tombol Delete Account di method createInfoPanel() dengan ini:
+
+            JButton deleteAccountButton = new JButton("Delete Account");
+            deleteAccountButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
+            deleteAccountButton.setForeground(Color.WHITE);
+            deleteAccountButton.setBackground(new Color(220, 20, 60)); // Crimson red background
+            deleteAccountButton.setFocusPainted(false);
+            deleteAccountButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            deleteAccountButton.setPreferredSize(new Dimension(150, 35));
+            deleteAccountButton.setMaximumSize(new Dimension(150, 35));
+            deleteAccountButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+// Hover effect
+            deleteAccountButton.addMouseListener(new java.awt.event.MouseAdapter() {
+                @Override
+                public void mouseEntered(java.awt.event.MouseEvent evt) {
+                    deleteAccountButton.setBackground(new Color(200, 0, 40)); // Darker red on hover
+                    deleteAccountButton.setFont(new Font("Segoe UI", Font.BOLD, 15));
+                }
+
+                @Override
+                public void mouseExited(java.awt.event.MouseEvent evt) {
+                    deleteAccountButton.setBackground(new Color(220, 20, 60)); // Original color
+                    deleteAccountButton.setFont(new Font("Segoe UI", Font.BOLD, 14));
+                }
+            });
+
+            deleteAccountButton.addActionListener(e -> {
+                dispose();
+                new DeleteAccountGUI().setVisible(true);
+            });
+
+// Tambahkan padding sebelum tombol
+            infoPanel.add(Box.createVerticalStrut(20));
+
+// Buat wrapper panel untuk tombol agar centered
+            JPanel buttonWrapper = new JPanel(new FlowLayout(FlowLayout.LEFT, 20, 0));
+            buttonWrapper.setOpaque(false);
+            buttonWrapper.setAlignmentX(Component.LEFT_ALIGNMENT);
+            buttonWrapper.add(deleteAccountButton);
+
+            infoPanel.add(buttonWrapper);
+
         } else {
             infoLabel.setText("    Login Terlebih Dahulu!");
         }
+        
 
         return infoPanel;
     }

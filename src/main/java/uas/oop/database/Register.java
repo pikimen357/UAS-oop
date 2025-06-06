@@ -188,7 +188,8 @@ public class Register extends JFrame {
                 long accountNumber = 100_000_000_000L + (Math.abs(new SecureRandom().nextLong()) % 900_000_000_000L);
 
                 // Simpan akun
-                SavingsAccount account = new SavingsAccount(accountNumber, saldoAwal, customer.getIdUser());
+                int idUser = customer.getIdCustomer();
+                SavingsAccount account = new SavingsAccount(accountNumber, saldoAwal, idUser);
                 account.insertToAccounts(connection);
 
                 connection.commit();

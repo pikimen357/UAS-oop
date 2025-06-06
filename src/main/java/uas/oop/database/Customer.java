@@ -1,9 +1,6 @@
 package uas.oop.database;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class Customer extends User {
     private String fullName;
@@ -12,12 +9,9 @@ public class Customer extends User {
     private String address;
 
     private int idCustomer;
-    private int  counter;
-
     public Customer( String username, String passwordHash, String role, String email,
                     String fullName, String nik, String phone, String address) {
         super( username, passwordHash, role, email);
-        this.idCustomer = counter++;
         this.fullName = fullName;
         this.nik = nik;
         this.phone = phone;
@@ -55,7 +49,7 @@ public class Customer extends User {
         VALUES (?, ?, ?, ?, ?);
     """;
 
-        var preparedStatement = connection.prepareStatement(sql);
+        var preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
 
         preparedStatement.setInt(1, userId);
         preparedStatement.setString(2, fullName);
@@ -65,7 +59,13 @@ public class Customer extends User {
 
         int updateCount = preparedStatement.executeUpdate();
         if (updateCount > 0) {
-            System.out.println("Insert Customer successful");
+            // ✅ Ambil customer ID dari database
+            try (var generatedKeys = preparedStatement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    this.idCustomer = generatedKeys.getInt(1);
+                }
+            }
+            System.out.println("Insert Customer successful, ID = " + idCustomer);
         } else {
             throw new SQLException("Insert customer gagal");
         }

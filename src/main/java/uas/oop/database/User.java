@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class User {
-    private static int counter = 1;  // auto-increment id
     private int idUser;
 
     private String username;
@@ -14,7 +13,6 @@ public class User {
     private String email;
 
     public User( String username, String passwordHash, String role, String email) {
-        this.idUser = counter++;
         this.username = username;
         this.passwordHash = passwordHash;
         this.role = role;

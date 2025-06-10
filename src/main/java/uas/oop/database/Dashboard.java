@@ -195,7 +195,9 @@ public class Dashboard extends JFrame {
         menuPanel.add(createMenuCard("Akun", "src/main/resources/assets/admin.png", () -> {
             new Account(loggedInAccountNumber, loggedInUsername, loggedInCustomerId).setVisible(true);
         }));
-        menuPanel.add(createMenuCard("Riwayat", "src/main/resources/assets/img.png", null));
+        menuPanel.add(createMenuCard("Riwayat", "src/main/resources/assets/img.png", () -> {
+            new TransactionHistory(loggedInAccountNumber, loggedInUsername, loggedInCustomerId).setVisible(true);
+        }));
         menuPanel.add(createMenuCard("Tarik Tunai", "src/main/resources/assets/transfer.png", () -> {
             new TransaksiTarik(loggedInAccountNumber, loggedInUsername, loggedInCustomerId).setVisible(true);
         }));

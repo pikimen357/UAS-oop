@@ -3,12 +3,10 @@ package uas.oop.database;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class AppTransaksi extends JFrame {
+public class TransaksiSetor extends JFrame {
 
     private JPanel transactionPanel;
     private JLabel welcomeLabel;
@@ -16,14 +14,13 @@ public class AppTransaksi extends JFrame {
     private JLabel currentBalanceLabel;
     private JTextField amountField;
     private JButton depositButton;
-    private JButton withdrawalButton;
     private JLabel transactionMessageLabel;
 
     private long loggedInAccountNumber;
     private String loggedInUsername;
     private int loggedInCustomerId;
 
-    public AppTransaksi(long accountNumber, String username, int customerId) {
+    public TransaksiSetor(long accountNumber, String username, int customerId) {
         this.loggedInAccountNumber = accountNumber;
         this.loggedInUsername = username;
         this.loggedInCustomerId = customerId;
@@ -279,12 +276,7 @@ public class AppTransaksi extends JFrame {
         depositButton = createStyledButton("💰 Setor Tunai", new Color(46, 67, 204));
         depositButton.addActionListener(e -> performTransaction("deposit"));
 
-        // Withdrawal button
-        withdrawalButton = createStyledButton("💳 Tarik Tunai", new Color(231, 76, 60));
-        withdrawalButton.addActionListener(e -> performTransaction("withdrawal"));
-
         buttonPanel.add(depositButton);
-        buttonPanel.add(withdrawalButton);
 
         return buttonPanel;
     }
@@ -434,6 +426,6 @@ public class AppTransaksi extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new AppTransaksi(1234567890L, "user", 1).setVisible(true));
+        SwingUtilities.invokeLater(() -> new TransaksiSetor(1234567890L, "user", 1).setVisible(true));
     }
 }

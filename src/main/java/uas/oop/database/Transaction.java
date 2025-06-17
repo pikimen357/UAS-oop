@@ -15,6 +15,8 @@ public class Transaction {
     private String description;
     private LocalDateTime createdAt;
 
+    // OVERLOADING CONSTRUCTOR
+
     // Constructor for creating new transaction
     public Transaction(long accountNumber, String type, double amount, String description) {
         this.accountNumber = accountNumber;

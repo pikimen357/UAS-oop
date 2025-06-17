@@ -198,6 +198,7 @@ public class Register extends JFrame {
                         "Registrasi berhasil!\nAccount Number: " + accountNumber + "\nSaldo: " + saldoAwal,
                         "Sukses", JOptionPane.INFORMATION_MESSAGE);
                 dispose();
+                new Login().setVisible(true);
 
             } catch (SQLException ex) {
                 ex.printStackTrace();

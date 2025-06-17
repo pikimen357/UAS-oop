@@ -269,8 +269,8 @@ public class TransaksiTarik extends JFrame {
     private JPanel createButtonPanel() {
         JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 20, 0));
         buttonPanel.setOpaque(false);
-        buttonPanel.setMaximumSize(new Dimension(320, 45));
-        buttonPanel.setPreferredSize(new Dimension(320, 45));
+        buttonPanel.setMaximumSize(new Dimension(250, 45));
+        buttonPanel.setPreferredSize(new Dimension(250, 45));
 
         // Deposit button
         withdrawButton = createStyledButton("💰 Tarik Tunai", new Color(204, 146, 46));

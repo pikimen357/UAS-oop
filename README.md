@@ -19,6 +19,7 @@ Aplikasi ini juga **terkoneksi dengan database MySQL** sehingga semua data pelan
 - Penarikan dan penyetoran saldo
 - Riwayat transaksi tersimpan di database
 - Validasi saldo sebelum transaksi
+- Penghapusan Akun
 
 ---
 
